@@ -563,7 +563,7 @@ class ProductController extends ApiController
     {
 
         if ($request->has('author_id')) {
-            $query = $query->where('id', $user->product_id);
+            $query = $query->where('author_id', $request->author_id);
         }
 
         return $query;
