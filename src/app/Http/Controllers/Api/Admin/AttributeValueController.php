@@ -67,7 +67,7 @@ class AttributeValueController extends ApiController
 
         $this->validator->isValid($request, 'RULE_ADMIN_CREATE');
 
-        $values = $this->repository->where('label', $request->get('label'))->get();
+        $values = $this->entity->where('label', $request->get('label'))->get();
 
         if ($values) {
             foreach ($values as $value) {
