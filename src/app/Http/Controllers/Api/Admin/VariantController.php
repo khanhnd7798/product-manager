@@ -55,7 +55,7 @@ class VariantController extends ApiController
 
         $variants = $query->get();
 
-        return $this->response->item($variants, new $this->transformer);
+        return $this->response->collection($variants, new $this->transformer);
     }
 
     public function show(Request $request, $id)
