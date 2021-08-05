@@ -627,7 +627,7 @@ class AdminAttributeTest extends TestCase
 
         $response = $this->call('PUT', 'api/product-management/admin/attribute-value/' . $attribute_value['id'], $attribute_value);
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
         $response->assertJson(['data' => $attribute_value]);
     }
 
@@ -697,5 +697,30 @@ class AdminAttributeTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
+    }
+
+    /** @test */
+    public function should_not_create_existed_attribute_value_by_admin() {
+        
+        $existed_attribute_value = factory(AttributeValue::class)->create()->toArray();
+
+        $response = $this->call('POST', 'api/product-management/admin/attribute-value', $existed_attribute_value);
+
+        $response->assertStatus(500);
+        $response->assertJson(['message' => 'Giá trị của thuộc tính này đã tồn tại !']);
+    }
+
+    /** @test */
+    public function should_not_update_existed_attribute_value_by_admin() {
+        
+        $existed_attribute_values = factory(AttributeValue::class, 2)->create()->toArray();
+
+        $existed_attribute_values[1]['attribute_id'] = $existed_attribute_values[0]['attribute_id'];
+        $existed_attribute_values[1]['label'] = $existed_attribute_values[0]['label'];
+
+        $response = $this->call('PUT', 'api/product-management/admin/attribute-value/'.$existed_attribute_values[1]['id'], $existed_attribute_values[1]);
+
+        $response->assertStatus(500);
+        $response->assertJson(['message' => 'Giá trị của thuộc tính này đã tồn tại !']);
     }
 }
