@@ -3,8 +3,8 @@
 namespace VCComponent\Laravel\Product\Test\Unit\Schema;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use VCComponent\Laravel\Product\Entities\ProductSchema;
 use VCComponent\Laravel\Product\Services\SchemaService;
+use VCComponent\Laravel\Product\Test\Stubs\Models\ProductSchema;
 use VCComponent\Laravel\Product\Test\TestCase;
 
 class SchemaServiceTest extends TestCase
