@@ -34,7 +34,7 @@ class AttributeValueController extends ApiController
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['name'], $request);
+        $query = $this->applySearchFromRequest($query, ['label'], $request);
         $query = $this->applyOrderByFromRequest($query, $request);
 
         $per_page   = $request->has('per_page') ? (int) $request->get('per_page') : 15;
@@ -67,23 +67,15 @@ class AttributeValueController extends ApiController
 
         $this->validator->isValid($request, 'RULE_ADMIN_CREATE');
 
-        $values = $this->repository->where('label', $request->get('label'))->get();
+        $duplicated_values = $this->entity->where('label', $request->get('label'))->where('attribute_id', $request->get('attribute_id'))->get();
 
-        if ($values) {
-            foreach ($values as $value) {
-                if ($value->attribute_id == $request->get('attribute_id')) {
-                    throw new \Exception("Giá trị của thuộc tính này đã tồn tại !", 1);
-                }
-            }
+        if ($duplicated_values->count()) {
+            throw new \Exception("Giá trị của thuộc tính này đã tồn tại !", 1);
         }
 
         $data = $request->all();
 
-        try {
-            $attribute = $this->repository->create($data);
-        } catch (QueryException $e) {
-            throw new \Exception("Thuộc tính nhập vào không tồn tại !", 1);
-        }
+        $attribute = $this->repository->create($data);
 
         return $this->response->item($attribute, new $this->transformer);
     }
@@ -92,15 +84,17 @@ class AttributeValueController extends ApiController
     {
         $this->validator->isValid($request, 'RULE_ADMIN_UPDATE');
 
+        $duplicated_values = $this->entity->where('label', $request->get('label'))->where('attribute_id', $request->get('attribute_id'))->where('id', '!=', $id)->get();
+
+        if ($duplicated_values->count()) {
+            throw new \Exception("Giá trị của thuộc tính này đã tồn tại !", 1);
+        }
+
         $this->repository->findById($id);
 
         $data = $request->all();
 
-        try {
-            $attribute = $this->repository->update($data, $id);
-        } catch (QueryException $e) {
-            throw new \Exception("Thuộc tính nhập vào không tồn tại !", 1);
-        }
+        $attribute = $this->repository->update($data, $id);
 
         return $this->response->item($attribute, new $this->transformer);
     }

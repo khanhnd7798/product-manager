@@ -538,9 +538,9 @@ class ProductController extends ApiController
 
         if ($request->has('in_stock')) {
             if ($request->in_stock === "true") {
-                $query = $this->repository->where('product_type', $this->productType)->getStock($query);
+                $query = $this->repository->getStock($query)->where('product_type', $this->productType);
             } elseif ($request->in_stock === "false") {
-                $query = $this->repository->where('product_type', $this->productType)->getOutStock($query);
+                $query = $this->repository->getOutStock($query)->where('product_type', $this->productType);
             }
         }
 
@@ -563,7 +563,7 @@ class ProductController extends ApiController
     {
 
         if ($request->has('author_id')) {
-            $query = $query->where('id', $user->product_id);
+            $query = $query->where('author_id', $request->author_id);
         }
 
         return $query;

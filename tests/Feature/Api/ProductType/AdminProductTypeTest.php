@@ -3,9 +3,9 @@
 namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use VCComponent\Laravel\Product\Entities\Product;
-use VCComponent\Laravel\Product\Entities\ProductSchema;
-use VCComponent\Laravel\Product\Test\Stubs\Models\Product as Entity;
+use VCComponent\Laravel\Product\Test\Stubs\Models\Product;
+use VCComponent\Laravel\Product\Test\Stubs\Models\ProductMeta;
+use VCComponent\Laravel\Product\Test\Stubs\Models\ProductSchema;
 use VCComponent\Laravel\Product\Test\TestCase;
 
 class AdminProductTypeTest extends TestCase
@@ -561,5 +561,124 @@ class AdminProductTypeTest extends TestCase
             "Gía bán"         => $product->price,
             "Đơn vị tính"     => $product->unit_price,
         ]]]);
+    }
+
+    /** @test */
+    public function can_create_chema_when_create_product_of_type_sim_by_admin()
+    {
+        $schemas = factory(ProductSchema::class, 2)->state('sim')->create();
+
+        $product_meta_datas = [];
+        foreach ($schemas as $schema) {
+            $product_meta_datas[$schema->name] = $schema->name . '_value';
+        }
+
+        $product = factory(Product::class)->state('sim')->make($product_meta_datas)->toArray();
+
+        $response = $this->call('POST', 'api/product-management/admin/sim', $product);
+
+        $response->assertStatus(200);
+        $response->assertJson(['data' => $product]);
+
+        foreach ($product_meta_datas as $key => $value) {
+            $this->assertDatabaseHas('product_meta', ['key' => $key, 'value' => $value]);
+        }
+    }
+
+    /** @test */
+    public function can_skip_create_undefinded_chema_when_create_product_of_type_sim_by_admin()
+    {
+        $product_meta_datas = [
+            'an_undefined_schema_key' => 'undefine_schema_value',
+        ];
+
+        $product = factory(Product::class)->state('sim')->make($product_meta_datas)->toArray();
+
+        $response = $this->call('POST', 'api/product-management/admin/sim', $product);
+
+        unset($product['an_undefined_schema_key']);
+
+        $response->assertStatus(200);
+        $response->assertJson(['data' => $product]);
+
+        foreach ($product_meta_datas as $key => $value) {
+            $this->assertDatabaseMissing('product_meta', ['key' => $key, 'value' => $value]);
+        }
+    }
+
+    /** @test */
+    public function can_create_new_schema_when_update_product_of_type_sim_by_admin()
+    {
+        $schemas = factory(ProductSchema::class, 1)->state('sim')->create();
+
+        $product_meta_datas = [];
+        foreach ($schemas as $schema) {
+            $product_meta_datas[$schema->name] = $schema->name . "_value";
+        }
+
+        $product = factory(Product::class)->state('sim')->create()->toArray();
+
+        $update_product_data = factory(Product::class)->state('sim')->make($product_meta_datas)->toArray();
+
+        $response = $this->call('PUT', 'api/product-management/admin/sim/' . $product['id'], $update_product_data);
+
+        $response->assertStatus(200);
+        $response->assertJson(['data' => $update_product_data]);
+
+        foreach ($product_meta_datas as $key => $value) {
+            $this->assertDatabaseHas('product_meta', ['key' => $key, 'value' => $value]);
+        }
+    }
+
+    /** @test */
+    public function can_update_existed_schema_when_update_product_of_type_sim_by_admin()
+    {
+        $schemas = factory(ProductSchema::class, 1)->state('sim')->create();
+
+        $product_meta_datas = [];
+        $product_metas = [];
+        foreach ($schemas as $schema) {
+            $product_meta_datas[$schema->name] = $schema->name . "_value";
+
+            array_push($product_metas, factory(ProductMeta::class)->make([
+                'key' => $schema->name,
+                'value' => ""
+            ]));
+        }
+
+        $product = factory(Product::class)->state('sim')->create()->productMetas()->saveMany($product_metas);
+
+        $update_product_data = factory(Product::class)->state('sim')->make($product_meta_datas)->toArray();
+
+        $response = $this->call('PUT', 'api/product-management/admin/sim/' . $product[0]['id'], $update_product_data);
+
+        $response->assertStatus(200);
+        $response->assertJson(['data' => $update_product_data]);
+
+        foreach ($product_meta_datas as $key => $value) {
+            $this->assertDatabaseHas('product_meta', ['key' => $key, 'value' => $value]);
+        }
+    }
+
+    /** @test */
+    public function can_skip_update_undefined_schema_when_update_product_of_type_sim_by_admin() {
+        $product_meta_datas = [
+            'an_undefined_schema_key' => 'undefined_schema_value'
+        ];
+
+        $product = factory(Product::class)->state('sim')->create()->toArray();
+
+        $new_data_with_undefined_schema = factory(Product::class)->state('sim')->make($product_meta_datas)->toArray();
+
+        $response = $this->call('PUT', 'api/product-management/admin/sim/'.$product['id'], $new_data_with_undefined_schema);
+
+        unset($new_data_with_undefined_schema['an_undefined_schema_key']);
+
+        $response->assertStatus(200);
+        $response->assertJson(['data' => $new_data_with_undefined_schema]);
+        
+        foreach ($product_meta_datas as $key => $value) {
+            $this->assertDatabaseMissing('product_meta', ['key' => $key, 'value' => $value]);
+        }
     }
 }

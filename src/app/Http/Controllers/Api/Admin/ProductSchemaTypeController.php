@@ -62,6 +62,6 @@ class ProductSchemaTypeController extends ApiController
             $transformer = new $this->transformer;
         }
 
-        return $this->response->paginator($schematypes, $transformer);
+        return $this->response->collection($schematypes, $transformer);
     }
 }
