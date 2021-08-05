@@ -4,9 +4,9 @@ namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Variant;
-use VCComponent\Laravel\Product\Test\VariantTestCase;
+use VCComponent\Laravel\Product\Test\TestCase;
 
-class AdminVariantTest extends VariantTestCase
+class AdminVariantTest extends TestCase
 {
 
     use RefreshDatabase;

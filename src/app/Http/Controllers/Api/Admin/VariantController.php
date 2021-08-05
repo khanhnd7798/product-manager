@@ -23,13 +23,6 @@ class VariantController extends ApiController
                 ['except' => config('product.auth_middleware.admin.except')]
             );
         }
-
-        if (config('product.auth_middleware.admin.middleware') !== '') {
-            $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToShow($user, $id)) {
-                throw new PermissionDeniedException();
-            }
-        }
     }
 
     public function index(Request $request)
