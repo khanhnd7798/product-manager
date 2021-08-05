@@ -3,10 +3,10 @@
 namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use VCComponent\Laravel\Product\Entities\Product;
+use VCComponent\Laravel\Product\Test\Stubs\Models\Product;
 use VCComponent\Laravel\Product\Test\TestCase;
 
-class AdminDeteleTrashTest extends TestCase
+class AdminDeleteTrashTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -59,6 +59,18 @@ class AdminDeteleTrashTest extends TestCase
     /**
      * @test
      */
+    public function should_not_restore_a_product_with_undefine_id_by_admin_router()
+    {
+        $product = factory(Product::class)->create()->toArray();
+        $response = $this->call('PUT', 'api/product-management/admin/products/trash/' . $product['id'] . '/restore');
+
+        $response->assertStatus(400);
+        $response->assertJson(['message' => 'Product not found']);
+    }
+
+    /**
+     * @test
+     */
     public function can_bulk_move_products_to_trash_by_admin_router()
     {
         $number       = rand(1, 5);
@@ -80,6 +92,51 @@ class AdminDeteleTrashTest extends TestCase
         foreach ($listProducts as $item) {
             $this->assertSoftDeleted('products', $item);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_bulk_move_products_to_trash_without_ids_by_admin_router()
+    {
+        $number       = rand(1, 5);
+        $listProducts = [];
+        for ($i = 0; $i < $number; $i++) {
+            $product = factory(Product::class)->create()->toArray();
+            unset($product['updated_at']);
+            unset($product['created_at']);
+            array_push($listProducts, $product);
+        }
+
+        $data    = [];
+
+        $response = $this->call('DELETE', 'api/product-management/admin/products/bulk', $data);
+        
+        $response->assertStatus(422);
+        $response->assertJson(['message' => 'The given data was invalid.']);
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_bulk_move_products_to_trash_with_undefined_ids_by_admin_router()
+    {
+        $number       = rand(1, 5);
+        $listProducts = [];
+        for ($i = 0; $i < $number; $i++) {
+            $product = factory(Product::class)->create()->toArray();
+            unset($product['updated_at']);
+            unset($product['created_at']);
+            array_push($listProducts, $product);
+        }
+
+        $listIds = ['UNDEFINED_IDS'];
+        $data    = ["ids" => $listIds];
+
+        $response = $this->call('DELETE', 'api/product-management/admin/products/bulk', $data);
+
+        $response->assertStatus(400);
+        $response->assertJson(['message' => 'Product not found']);
     }
 
     /**
@@ -116,6 +173,22 @@ class AdminDeteleTrashTest extends TestCase
             $response->assertStatus(200);
             $response->assertJson(['data' => $item]);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_bulk_restore_products_with_undefine_ids_by_admin_router()
+    {
+        $products = factory(Product::class, 3)->create()->toArray();
+
+        $listIds  = array_column($products, 'id');
+        $data     = ["ids" => $listIds];
+
+        $response = $this->call('PUT', 'api/product-management/admin/products/trash/bulk/restores', $data);
+
+        $response->assertStatus(400);
+        $response->assertJson(['message' => 'Product not found']);
     }
 
     /**
@@ -256,6 +329,17 @@ class AdminDeteleTrashTest extends TestCase
     /**
      * @test
      */
+    public function should_not_delete_a_products_with_undefined_id_by_admin()
+    {
+        $response = $this->json('DELETE', 'api/product-management/admin/products/' . 'undefin_id' . '/force');
+
+        $response->assertStatus(400);
+        $response->assertJson(['message' => 'Product not found']);
+    }
+
+    /**
+     * @test
+     */
     public function can_bulk_delete_products_by_admin()
     {
         $number       = rand(1, 5);
@@ -278,6 +362,20 @@ class AdminDeteleTrashTest extends TestCase
         foreach ($listProducts as $item) {
             $this->assertDeleted('products', $item);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_bulk_delete_products_with_undefined_ids_by_admin()
+    {
+        $listIds = ['undefine_ids'];
+        $data = ['ids' => $listIds];
+
+        $response = $this->json('DELETE', 'api/product-management/admin/products/force/bulk', $data);
+
+        $response->assertStatus(400);
+        $response->assertJson(['message' => 'Product not found']);
     }
 
     /**

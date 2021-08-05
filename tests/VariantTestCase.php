@@ -8,7 +8,6 @@ use Dingo\Api\Provider\LaravelServiceProvider;
 use Dingo\Api\Transformer\Adapter\Fractal;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use VCComponent\Laravel\Category\Providers\CategoryServiceProvider;
-use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Providers\ProductRouteProvider;
 use VCComponent\Laravel\Product\Providers\ProductServiceProvider;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as TestEntity;
@@ -16,7 +15,7 @@ use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 use VCComponent\Laravel\Tag\Providers\TagServiceProvider;
 use VCComponent\Laravel\User\Providers\UserComponentProvider;
 
-abstract class TestCase extends OrchestraTestCase
+abstract class VariantTestCase extends OrchestraTestCase
 {
     /**
      * Load package service provider
@@ -73,7 +72,9 @@ abstract class TestCase extends OrchestraTestCase
         ]);
 
         $app['config']->set('product.auth_middleware', [
-            'admin' => [],
+            'admin' => [
+                'middleware' => ''
+            ],
             'frontend' => [],
         ]);
         $app['config']->set('product.test_mode', true);

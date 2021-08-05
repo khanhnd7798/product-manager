@@ -5,10 +5,11 @@ namespace VCComponent\Laravel\Product\Test\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use VCComponent\Laravel\Product\Test\TestCase;
 use Illuminate\Support\Facades\App;
-use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Category\Entities\Category;
 use VCComponent\Laravel\Category\Entities\Categoryable;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
+use VCComponent\Laravel\Product\Test\Stubs\Models\Product;
+
 class ProductReponsitoryTest extends TestCase
 {
     use RefreshDatabase;
