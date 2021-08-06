@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use VCComponent\Laravel\Category\Entities\Category;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product;
 use VCComponent\Laravel\Product\Test\Stubs\Models\ProductMeta;
@@ -491,17 +492,23 @@ class AdminProductTest extends TestCase
     public function can_get_list_paginated_products_with_search_by_admin_router()
     {
         $products = factory(Product::class, 5)->create();
+
+        $search = $products[0]['name'];
+
+        $products = DB::table('products')->where('name', 'like', '%'.$search.'%')->orWhere('description', 'like', '%'.$search.'%')->orWhere('price', 'like', '%'.$search.'%')->get();
         $products = $products->map(function ($product) {
+            $product = (array) $product;
             unset($product['created_at']);
             unset($product['updated_at']);
+            unset($product['deleted_at']);
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products?search=' . $products[0]['name']);
+        $response = $this->call('GET', 'api/product-management/admin/products?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson([
-            'data' => [$products[0]],
+            'data' => $products,
         ]);
         $response->assertJsonStructure([
             'data' => [],
@@ -951,17 +958,23 @@ class AdminProductTest extends TestCase
     public function can_get_list_all_products_with_search_by_admin_router()
     {
         $products = factory(Product::class, 5)->create();
+
+        $search = $products[0]['name'];
+
+        $products = DB::table('products')->where('name', 'like', '%'.$search.'%')->orWhere('description', 'like', '%'.$search.'%')->orWhere('price', 'like', '%'.$search.'%')->get();
         $products = $products->map(function ($product) {
+            $product = (array) $product;
             unset($product['created_at']);
             unset($product['updated_at']);
+            unset($product['deleted_at']);
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?search=' . $products[0]['name']);
+        $response = $this->call('GET', 'api/product-management/admin/products/all?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson([
-            'data' => [$products[0]],
+            'data' => $products
         ]);
         $response->assertJsonStructure([
             'data' => []
@@ -2019,8 +2032,9 @@ class AdminProductTest extends TestCase
 
         $param = '?label=product&extension=xlsx&search=' . $search;
 
-        $products = $product->filter(function ($product) use ($search) {
-            return $product->name == $search;
+        $products = DB::table('products')->where('name', 'like', '%'.$search.'%')->orWhere('description', 'like', '%'.$search.'%')->orWhere('price', 'like', '%'.$search.'%')->get();
+        $products = $products->map(function ($product) {
+            return $product;
         });
 
         $export_products = $this->getExportProducts($products);

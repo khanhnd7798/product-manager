@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Variant;
 use VCComponent\Laravel\Product\Test\TestCase;
 
@@ -63,10 +64,12 @@ class AdminVariantTest extends TestCase
 
         $search = $variants[0]->label;
 
-        $variants = $variants->filter(function ($variant) use ($search) {
+        $variants = DB::table('variants')->where('label', 'like', '%'.$search.'%')->orWhere('price', 'like', '%'.$search.'%')->orWhere('type', 'like', '%'.$search.'%')->get();
+        $variants = $variants->map(function ($variant) {
+            $variant = (array) $variant;
             unset($variant['created_at']);
             unset($variant['updated_at']);
-            return ($variant['label'] == $search || $variant['price'] == $search || $variant['type'] == $search);
+            return $variant;
         })->toArray();
 
         $listIds = array_column($variants, 'id');
@@ -171,10 +174,12 @@ class AdminVariantTest extends TestCase
 
         $search = $variants[0]->label;
 
-        $variants = $variants->filter(function ($variant) use ($search) {
+        $variants = DB::table('variants')->where('label', 'like', '%'.$search.'%')->orWhere('price', 'like', '%'.$search.'%')->orWhere('type', 'like', '%'.$search.'%')->get();
+        $variants = $variants->map(function ($variant) {
+            $variant = (array) $variant;
             unset($variant['created_at']);
             unset($variant['updated_at']);
-            return ($variant['label'] == $search || $variant['price'] == $search || $variant['type'] == $search);
+            return $variant;
         })->toArray();
 
         $listIds = array_column($variants, 'id');
