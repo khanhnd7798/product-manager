@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Attribute;
 use VCComponent\Laravel\Product\Test\Stubs\Models\AttributeValue;
 use VCComponent\Laravel\Product\Test\TestCase;
@@ -78,10 +79,12 @@ class AdminAttributeTest extends TestCase
 
         $search = $attributes[0]->name;
 
-        $attributes = $attributes->filter(function ($attribute) use ($search) {
+        $attributes = DB::table('attributes')->where('name', 'like', '%'.$search.'%')->get();
+        $attributes = $attributes->map(function ($attribute) {
+            $attribute = (array) $attribute;
             unset($attribute['created_at']);
             unset($attribute['updated_at']);
-            return $attribute->name == $search;
+            return $attribute;
         })->toArray();
 
         $listIds = array_column($attributes, 'id');
@@ -470,10 +473,12 @@ class AdminAttributeTest extends TestCase
 
         $search = $attribute_values[0]->label;
 
-        $attribute_values = $attribute_values->filter(function ($attribute_value) use ($search) {
+        $attribute_values = DB::table('attribute_values')->where('label', 'like', '%'.$search.'%')->get();
+        $attribute_values = $attribute_values->map(function ($attribute_value) {
+            $attribute_value = (array) $attribute_value;
             unset($attribute_value['created_at']);
             unset($attribute_value['updated_at']);
-            return $attribute_value->label == $search;
+            return $attribute_value;
         })->toArray();
 
         $listIds = array_column($attribute_values, 'id');
