@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product;
 use VCComponent\Laravel\Product\Test\Stubs\Models\ProductSchema;
 use VCComponent\Laravel\Product\Test\Stubs\Models\ProductSchemaRule;
@@ -80,7 +81,11 @@ class AdminProductSchemaTest extends TestCase
     {
         $product_schemas = factory(ProductSchema::class, 5)->create();
 
+        $search = $product_schemas[0]['name'];
+
+        $product_schemas = DB::table('product_schemas')->where('name', 'like', $search)->get();
         $product_schemas = $product_schemas->map(function ($ps) {
+            $ps = (array) $ps;
             unset($ps['created_at']);
             unset($ps['updated_at']);
             return $ps;
@@ -89,13 +94,11 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schemas, 'id');
         array_multisort($listIds, SORT_DESC, $product_schemas);
 
-        $search = $product_schemas[0]['name'];
-
         $response = $this->call('GET', 'api/product-management/admin/schemas?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson([
-            'data' => [$product_schemas[0]]
+            'data' => $product_schemas
         ]);
         $response->assertJsonStructure([
             'data' => [],
@@ -356,11 +359,13 @@ class AdminProductSchemaTest extends TestCase
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $search_name = $product_schema_rules[1]->name;
-
-        $product_schema_rules = $product_schema_rules->filter(function ($product_schema_rule) use ($search_name) {
+        
+        $product_schema_rules = DB::table('product_schema_rules')->where('name', 'like', '%'.$search_name.'%')->get();
+        $product_schema_rules = $product_schema_rules->map(function ($product_schema_rule) {
+            $product_schema_rule = (array) $product_schema_rule;
             unset($product_schema_rule['created_at']);
             unset($product_schema_rule['updated_at']);
-            return $product_schema_rule->name == $search_name;
+            return $product_schema_rule;
         })->toArray();
 
         $listIds = array_column($product_schema_rules, 'id');
@@ -464,10 +469,12 @@ class AdminProductSchemaTest extends TestCase
 
         $search_name = $product_schema_rules[1]->name;
 
-        $product_schema_rules = $product_schema_rules->filter(function ($product_schema_rule) use ($search_name) {
+        $product_schema_rules = DB::table('product_schema_rules')->where('name', 'like', '%'.$search_name.'%')->get();
+        $product_schema_rules = $product_schema_rules->map(function ($product_schema_rule) {
+            $product_schema_rule = (array) $product_schema_rule;
             unset($product_schema_rule['created_at']);
             unset($product_schema_rule['updated_at']);
-            return $product_schema_rule->name == $search_name;
+            return $product_schema_rule;
         })->toArray();
 
         $listIds = array_column($product_schema_rules, 'id');
@@ -571,10 +578,12 @@ class AdminProductSchemaTest extends TestCase
 
         $search_name = $product_schema_types[1]->name;
 
-        $product_schema_types = $product_schema_types->filter(function ($product_schema_type) use ($search_name) {
+        $product_schema_types = DB::table('product_schema_types')->where('name', 'like', '%'.$search_name.'%')->get();
+        $product_schema_types = $product_schema_types->map(function ($product_schema_type) {
+            $product_schema_type = (array) $product_schema_type;
             unset($product_schema_type['created_at']);
             unset($product_schema_type['updated_at']);
-            return $product_schema_type->name == $search_name;
+            return $product_schema_type;
         })->toArray();
 
         $listIds = array_column($product_schema_types, 'id');
@@ -684,10 +693,13 @@ class AdminProductSchemaTest extends TestCase
 
         $search_name = $product_schema_types[1]->name;
 
-        $product_schema_types = $product_schema_types->filter(function ($product_schema_type) use ($search_name) {
+        $product_schema_types = DB::table('product_schema_types')->where('name', 'like', '%'.$search_name.'%')->get();
+        $product_schema_types = $product_schema_types->map(function ($product_schema_type) {
+            $product_schema_type = (array) $product_schema_type;
             unset($product_schema_type['created_at']);
             unset($product_schema_type['updated_at']);
-            return $product_schema_type->name == $search_name;
+            unset($product_schema_type['deleted_at']);
+            return $product_schema_type;
         })->toArray();
 
         $listIds = array_column($product_schema_types, 'id');
