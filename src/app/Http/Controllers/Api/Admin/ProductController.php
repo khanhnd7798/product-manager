@@ -46,6 +46,9 @@ class ProductController extends ApiController
                 $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
             }
         }
+        else {
+            throw new Exception("Admin middleware configuration is required");
+        }
         if (isset(config('product.transformers')['product'])) {
             $this->transformer = config('product.transformers.product');
         } else {
