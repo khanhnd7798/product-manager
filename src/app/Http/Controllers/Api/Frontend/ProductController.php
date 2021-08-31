@@ -88,7 +88,7 @@ class ProductController extends ApiController
             throw new NotFoundException('Product');
         }
 
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToShow($user, $id)) {
                 throw new PermissionDeniedException();
@@ -106,7 +106,7 @@ class ProductController extends ApiController
 
     public function store(Request $request)
     {
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToCreate($user)) {
                 throw new PermissionDeniedException();
@@ -154,7 +154,7 @@ class ProductController extends ApiController
             throw new NotFoundException('Product');
         }
 
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToUpdateItem($user, $id)) {
                 throw new PermissionDeniedException();
@@ -195,7 +195,7 @@ class ProductController extends ApiController
             throw new NotFoundException('Product');
         }
 
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToDelete($user, $id)) {
                 throw new PermissionDeniedException();
@@ -213,7 +213,7 @@ class ProductController extends ApiController
 
     public function bulkUpdateStatus(Request $request)
     {
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToUpdate($user)) {
                 throw new PermissionDeniedException();
@@ -241,7 +241,7 @@ class ProductController extends ApiController
 
     public function updateStatusItem(Request $request, $id)
     {
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToUpdateItem($user, $id)) {
                 throw new PermissionDeniedException();
