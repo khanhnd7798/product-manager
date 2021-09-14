@@ -4,6 +4,7 @@ namespace VCComponent\Laravel\Product\Providers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use VCComponent\Laravel\Product\Contracts\ProductPolicyInterface;
 use VCComponent\Laravel\Product\Contracts\ViewProductDetailControllerInterface;
 use VCComponent\Laravel\Product\Contracts\ViewProductListControllerInterface;
 use VCComponent\Laravel\Product\Entities\Attribute;
@@ -12,6 +13,7 @@ use VCComponent\Laravel\Product\Entities\Schema;
 use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductDetailController as ViewProductDetailController;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductListController as ViewProductListController;
+use VCComponent\Laravel\Product\Policies\ProductPolicy;
 use VCComponent\Laravel\Product\Products\Product;
 use VCComponent\Laravel\Product\Repositories\AttributeRepository;
 use VCComponent\Laravel\Product\Repositories\AttributeRepositoryEloquent;
@@ -68,18 +70,25 @@ class ProductServiceProvider extends ServiceProvider
         $this->app->bind(ProductSchemaTypeRepository::class, ProductSchemaTypeRepositoryEloquent::class);
         $this->app->bind(ProductSchemaRuleRepository::class, ProductSchemaRuleRepositoryEloquent::class);
         $this->registerControllers();
+        $this->registerPolicies();
 
         $this->app->singleton('moduleProduct.product', function () {
             return new Product();
         });
 
         $this->app->bind('vcc.product.schema', SchemaService::class);
+        $this->app->register(ProductAuthServiceProvider::class);
     }
 
     private function registerControllers()
     {
         $this->app->bind(ViewProductListControllerInterface::class, ViewProductListController::class);
         $this->app->bind(ViewProductDetailControllerInterface::class, ViewProductDetailController::class);
+    }
+
+    private function registerPolicies()
+    {
+        $this->app->bind(ProductPolicyInterface::class, ProductPolicy::class);
     }
 
     private function bootEntityName()
