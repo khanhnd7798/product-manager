@@ -39,7 +39,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('manage-product')) {
+            if (Gate::forUser($user)->denies('manage', $this->entity)) {
                 throw new PermissionDeniedException();
             }
 
@@ -210,7 +210,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUse($user)->denies('view-product', $product)) {
+            if (Gate::forUse($user)->denies('view', $product)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -230,7 +230,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('create-product')) {
+            if (Gate::forUser($user)->denies('create', $this->entity)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -297,7 +297,7 @@ class ProductController extends ApiController
         if (!empty(config('product.auth_middleware.admin'))) {
 
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('create-product', $product)) {
+            if (Gate::forUser($user)->denies('update-item', $product)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -338,7 +338,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('delete-product', $product)) {
+            if (Gate::forUser($user)->denies('delete', $product)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -356,7 +356,7 @@ class ProductController extends ApiController
     {
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('update-product')) {
+            if (Gate::forUser($user)->denies('update', $this->entity)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -377,7 +377,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('update-item-product', $product)) {
+            if (Gate::forUser($user)->denies('update-item', $product)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -401,7 +401,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('update-item-product', $product)) {
+            if (Gate::forUser($user)->denies('update-item', $product)) {
                 throw new PermissionDeniedException();
             }
         }

@@ -4,6 +4,8 @@ namespace VCComponent\Laravel\Product\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use VCComponent\Laravel\Product\Contracts\ProductPolicyInterface;
+use VCComponent\Laravel\Product\Entities\Product;
 
 class ProductAuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class ProductAuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        //
+        Product::class => ProductPolicyInterface::class,
     ];
 
     /**
@@ -24,13 +26,6 @@ class ProductAuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        
-        Gate::define('manage-product', 'VCComponent\Laravel\Product\Contracts\ProductPolicyInterface@ableToUse');
-        Gate::define('view-product', 'VCComponent\Laravel\Product\Contracts\ProductPolicyInterface@ableToShow');
-        Gate::define('create-product', 'VCComponent\Laravel\Product\Contracts\ProductPolicyInterface@ableToCreate');
-        Gate::define('update-item-product', 'VCComponent\Laravel\Product\Contracts\ProductPolicyInterface@ableToUpdateItem');
-        Gate::define('update-product', 'VCComponent\Laravel\Product\Contracts\ProductPolicyInterface@ableToUpdate');
-        Gate::define('delete-product', 'VCComponent\Laravel\Product\Contracts\ProductPolicyInterface@ableToDelete');
         //
     }
 }
