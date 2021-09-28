@@ -15,6 +15,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_all_variants_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $variants = $variants->map(function ($variant) {
@@ -26,7 +28,7 @@ class AdminVariantTest extends TestCase
         $listIds = array_column($variants, 'id');
         array_multisort($listIds, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants/list');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants/list');
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -35,6 +37,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_all_variants_with_constraints_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $constraint_label = $variants[0]->label;
@@ -51,7 +55,7 @@ class AdminVariantTest extends TestCase
         $listIds = array_column($variants, 'id');
         array_multisort($listIds, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants/list?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants/list?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -60,6 +64,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_all_variants_with_search_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $search = $variants[0]->label;
@@ -75,7 +81,7 @@ class AdminVariantTest extends TestCase
         $listIds = array_column($variants, 'id');
         array_multisort($listIds, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants/list?search=' . $search);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants/list?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -84,6 +90,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_all_variants_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $variants = $variants->map(function ($variant) {
@@ -100,7 +108,7 @@ class AdminVariantTest extends TestCase
         $listLabels = array_column($variants, 'label');
         array_multisort($listLabels, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants/list?order_by=' . $order_by);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants/list?order_by=' . $order_by);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -109,6 +117,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_pagiante_variants_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $variants = $variants->map(function ($variant) {
@@ -120,7 +130,7 @@ class AdminVariantTest extends TestCase
         $listIds = array_column($variants, 'id');
         array_multisort($listIds, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants');
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -137,6 +147,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_paginate_variants_with_constraints_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $constraint_label = $variants[0]->label;
@@ -153,7 +165,7 @@ class AdminVariantTest extends TestCase
         $listIds = array_column($variants, 'id');
         array_multisort($listIds, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -170,6 +182,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_paginate_variants_with_search_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $search = $variants[0]->label;
@@ -185,7 +199,7 @@ class AdminVariantTest extends TestCase
         $listIds = array_column($variants, 'id');
         array_multisort($listIds, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants?search=' . $search);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -202,6 +216,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_list_paginate_variants_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $variants = factory(Variant::class, 5)->create();
 
         $variants = $variants->map(function ($variant) {
@@ -218,7 +234,7 @@ class AdminVariantTest extends TestCase
         $listLabels = array_column($variants, 'label');
         array_multisort($listLabels, SORT_DESC, $variants);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants?order_by=' . $order_by);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants?order_by=' . $order_by);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variants]);
@@ -235,12 +251,14 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_get_a_variant_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $variant = factory(Variant::class)->create()->toArray();
 
         unset($variant['created_at']);
         unset($variant['updated_at']);
 
-        $response = $this->call('GET', 'api/product-management/admin/variants/' . $variant['id']);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants/' . $variant['id']);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variant]);
@@ -249,8 +267,9 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_get_a_variant_with_undefine_id_by_admin()
     {
+        $token = $this->loginToken();
 
-        $response = $this->call('GET', 'api/product-management/admin/variants/' . rand(1, 5));
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/variants/' . rand(1, 5));
 
         $response->assertStatus(500);
         $response->assertJson(['message' => "Không tìm thấy giá trị !"]);
@@ -259,12 +278,14 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_create_a_variant_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(Variant::class)->make()->toArray();
 
         unset($data['updated_at']);
         unset($data['created_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/variants', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/variants', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
@@ -273,6 +294,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_create_a_variant_with_null_label_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(Variant::class)->make([
             'label' => null
         ])->toArray();
@@ -280,7 +303,7 @@ class AdminVariantTest extends TestCase
         unset($data['updated_at']);
         unset($data['created_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/variants', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/variants', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -294,6 +317,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_create_a_variant_with_null_product_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(Variant::class)->make([
             'product_id' => null
         ])->toArray();
@@ -301,7 +326,7 @@ class AdminVariantTest extends TestCase
         unset($data['updated_at']);
         unset($data['created_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/variants', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/variants', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -315,6 +340,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_update_a_variant_by_admin()
     {
+        $token = $this->loginToken();
+
         $variant = factory(Variant::class)->create();
         $variant->label = "new_label";
         $variant = $variant->toArray();
@@ -322,7 +349,7 @@ class AdminVariantTest extends TestCase
         unset($variant['updated_at']);
         unset($variant['created_at']);
 
-        $response = $this->call('PUT', 'api/product-management/admin/variants/' . $variant['id'], $variant);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/variants/' . $variant['id'], $variant);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $variant]);
@@ -331,9 +358,11 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_update_a_variant_with__undefine_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $variant = factory(Variant::class)->make()->toArray();
 
-        $response = $this->call('PUT', 'api/product-management/admin/variants/' . rand(1, 5), $variant);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/variants/' . rand(1, 5), $variant);
 
         $response->assertStatus(500);
         $response->assertJson(['message' => "Không tìm thấy thuộc tính !"]);
@@ -342,6 +371,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_update_a_variant_with_null_label_by_admin()
     {
+        $token = $this->loginToken();
+
         $variant = factory(Variant::class)->create();
         $variant->label = null;
         $variant = $variant->toArray();
@@ -349,7 +380,7 @@ class AdminVariantTest extends TestCase
         unset($variant['updated_at']);
         unset($variant['created_at']);
 
-        $response = $this->call('PUT', 'api/product-management/admin/variants/' . $variant['id'], $variant);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/variants/' . $variant['id'], $variant);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -363,6 +394,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_update_a_variant_with_null_product_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $variant = factory(Variant::class)->create();
         $variant->product_id = null;
         $variant = $variant->toArray();
@@ -370,7 +403,7 @@ class AdminVariantTest extends TestCase
         unset($variant['updated_at']);
         unset($variant['created_at']);
 
-        $response = $this->call('PUT', 'api/product-management/admin/variants/' . $variant['id'], $variant);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/variants/' . $variant['id'], $variant);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -384,6 +417,8 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_update_status_variant_by_admin()
     {
+        $token = $this->loginToken();
+
         $update_status = 1;
 
         $variant = factory(Variant::class)->create();
@@ -393,7 +428,7 @@ class AdminVariantTest extends TestCase
         unset($variant['updated_at']);
         unset($variant['created_at']);
 
-        $response = $this->call('PUT', 'api/product-management/admin/variant/' . $variant['id'] . '/status', ['status' => $update_status]);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/variant/' . $variant['id'] . '/status', ['status' => $update_status]);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
@@ -402,7 +437,9 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_update_status_variant_with_undefined_id_by_admin()
     {
-        $response = $this->call('PUT', 'api/product-management/admin/variant/' . rand(1, 5) . '/status', ['status' => rand(1, 5)]);
+        $token = $this->loginToken();
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/variant/' . rand(1, 5) . '/status', ['status' => rand(1, 5)]);
 
         $response->assertStatus(500);
         $response->assertJson(['message' => 'Không tìm thấy thuộc tính !']);
@@ -411,10 +448,12 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function should_not_update_status_variant_with_out_status_by_admin()
     {
+        $token = $this->loginToken();
+
         $variant = factory(Variant::class)->create();
         $variant = $variant->toArray();
 
-        $response = $this->call('PUT', 'api/product-management/admin/variant/' . $variant['id'] . '/status', []);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/variant/' . $variant['id'] . '/status', []);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -428,9 +467,11 @@ class AdminVariantTest extends TestCase
     /** @test */
     public function can_delete_a_variant_by_admin()
     {
+        $token = $this->loginToken();
+
         $variant = factory(Variant::class)->create();
 
-        $response = $this->call('DELETE', 'api/product-management/admin/variants/' . $variant['id']);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('DELETE', 'api/product-management/admin/variants/' . $variant['id']);
 
         // $response->assertStatus(200);
         $response->assertJson(['success' => true]);

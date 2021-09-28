@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Product\Http\Controllers\Api\Frontend;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\Events\ProductCreatedEvent;
 use VCComponent\Laravel\Product\Events\ProductDeletedEvent;
@@ -26,7 +27,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUse($user)) {
+            if (Gate::forUser($user)->denies('manage', $this->entity)) {
                 throw new PermissionDeniedException();
             }
 
@@ -88,9 +89,9 @@ class ProductController extends ApiController
             throw new NotFoundException('Product');
         }
 
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToShow($user, $id)) {
+            if (Gate::forUser($user)->denies('view', $product)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -106,9 +107,9 @@ class ProductController extends ApiController
 
     public function store(Request $request)
     {
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToCreate($user)) {
+            if (Gate::forUser($user)->denies('create', $this->entity)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -154,9 +155,9 @@ class ProductController extends ApiController
             throw new NotFoundException('Product');
         }
 
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdateItem($user, $id)) {
+            if (Gate::forUser($user)->denies('update-item-product', $product)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -195,9 +196,9 @@ class ProductController extends ApiController
             throw new NotFoundException('Product');
         }
 
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToDelete($user, $id)) {
+            if (Gate::forUser($user)->denies('delete', $product)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -213,9 +214,9 @@ class ProductController extends ApiController
 
     public function bulkUpdateStatus(Request $request)
     {
-        if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdate($user)) {
+            if (Gate::forUser($user)->denies('update', $this->entity)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -241,16 +242,16 @@ class ProductController extends ApiController
 
     public function updateStatusItem(Request $request, $id)
     {
-        if (!empty(config('product.auth_middleware.admin'))) {
-            $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdateItem($user, $id)) {
-                throw new PermissionDeniedException();
-            }
-        }
-
         $product = $this->entity->find($id);
         if (!$product) {
             throw new NotFoundException('Product');
+        }
+
+        if (!empty(config('product.auth_middleware.frontend'))) {
+            $user = $this->getAuthenticatedUser();
+            if (Gate::forUser($user)->denies('update-item', $product)) {
+                throw new PermissionDeniedException();
+            }
         }
 
         $this->validator->isValid($request, 'UPDATE_STATUS_ITEM');

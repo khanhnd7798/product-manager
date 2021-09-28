@@ -17,6 +17,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_paginated_product_schemas_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schemas = factory(ProductSchema::class, 5)->create();
 
         $product_schemas = $product_schemas->map(function ($ps) {
@@ -28,7 +30,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schemas, 'id');
         array_multisort($listIds, SORT_DESC, $product_schemas);
 
-        $response = $this->call('GET', 'api/product-management/admin/schemas');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schemas');
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -47,6 +49,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_paginated_product_schemas_with_constraints_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schemas = factory(ProductSchema::class, 5)->create();
 
         $product_schemas = $product_schemas->map(function ($ps) {
@@ -60,7 +64,7 @@ class AdminProductSchemaTest extends TestCase
 
         $constraints = '{"name":"' . $product_schemas[0]['name'] . '"}';
 
-        $response = $this->call('GET', 'api/product-management/admin/schemas?consrtaints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schemas?consrtaints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -79,6 +83,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_paginated_product_schemas_with_search_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schemas = factory(ProductSchema::class, 5)->create();
 
         $search = $product_schemas[0]['name'];
@@ -94,7 +100,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schemas, 'id');
         array_multisort($listIds, SORT_DESC, $product_schemas);
 
-        $response = $this->call('GET', 'api/product-management/admin/schemas?search=' . $search);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schemas?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -113,6 +119,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_paginated_product_schemas_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schemas = factory(ProductSchema::class, 5)->create();
 
         $product_schemas = $product_schemas->map(function ($ps) {
@@ -129,7 +137,7 @@ class AdminProductSchemaTest extends TestCase
 
         $order_by = '{"name":"desc"}';
 
-        $response = $this->call('GET', 'api/product-management/admin/schemas?order_by=' . $order_by);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schemas?order_by=' . $order_by);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -148,12 +156,14 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_a_product_schema_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema = factory(ProductSchema::class)->create()->toArray();
 
         unset($product_schema['created_at']);
         unset($product_schema['updated_at']);
 
-        $response = $this->call('GET', 'api/product-management/admin/schemas/' . $product_schema['id']);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schemas/' . $product_schema['id']);
 
         $response->assertStatus(200);
         $response->assertjson(['data' => $product_schema]);
@@ -162,7 +172,9 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function should_not_get_product_chema_with_undefined_id_by_admin()
     {
-        $response = $this->call('GET', 'api/product-management/admin/schemas/undefine-ids');
+        $token = $this->loginToken();
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schemas/undefine-ids');
 
         $response->assertStatus(500);
         $response->assertjson(['message' => 'Không tìm thấy thuộc tính !']);
@@ -171,12 +183,14 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_create_a_product_schema_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(ProductSchema::class)->make()->toArray();
 
         unset($data['created_at']);
         unset($data['updated_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/schemas', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/schemas', $data);
 
         $response->assertStatus(200);
         $response->assertjson(['data' => $data]);
@@ -185,6 +199,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_create_a_product_schema_without_label_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(ProductSchema::class)->make([
             'label' => null
         ])->toArray();
@@ -192,7 +208,7 @@ class AdminProductSchemaTest extends TestCase
         unset($data['created_at']);
         unset($data['updated_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/schemas', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/schemas', $data);
 
         $response->assertStatus(422);
         $response->assertjson(['message' => 'The given data was invalid.']);
@@ -206,6 +222,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_create_a_product_schema_without_schema_rule_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(ProductSchema::class)->make([
             'schema_rule_id' => null
         ])->toArray();
@@ -213,7 +231,7 @@ class AdminProductSchemaTest extends TestCase
         unset($data['created_at']);
         unset($data['updated_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/schemas', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/schemas', $data);
 
         $response->assertStatus(422);
         $response->assertjson(['message' => 'The given data was invalid.']);
@@ -227,6 +245,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_create_a_product_schema_without_schema_type_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(ProductSchema::class)->make([
             'schema_type_id' => null
         ])->toArray();
@@ -234,7 +254,7 @@ class AdminProductSchemaTest extends TestCase
         unset($data['created_at']);
         unset($data['updated_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/schemas', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/schemas', $data);
 
         $response->assertStatus(422);
         $response->assertjson(['message' => 'The given data was invalid.']);
@@ -248,6 +268,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_create_a_product_schema_without_product_type_by_admin()
     {
+        $token = $this->loginToken();
+
         $data = factory(ProductSchema::class)->make([
             'product_type' => null
         ])->toArray();
@@ -255,7 +277,7 @@ class AdminProductSchemaTest extends TestCase
         unset($data['created_at']);
         unset($data['updated_at']);
 
-        $response = $this->call('POST', 'api/product-management/admin/schemas', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/schemas', $data);
 
         $response->assertStatus(422);
         $response->assertjson(['message' => 'The given data was invalid.']);
@@ -269,6 +291,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_update_a_product_schema_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema = factory(ProductSchema::class)->create();
         $product_schema->name = "new_name";
         $product_schema->label = "new_label";
@@ -280,7 +304,7 @@ class AdminProductSchemaTest extends TestCase
 
         $product_schema = $product_schema->toArray();
 
-        $response = $this->call('PUT', 'api/product-management/admin/schemas/' . $product_schema['id'], $product_schema);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/schemas/' . $product_schema['id'], $product_schema);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema]);
@@ -289,8 +313,10 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function should_not_update_a_product_schema_width_undefined_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema = factory(ProductSchema::class)->make()->toArray();
-        $response = $this->call('PUT', 'api/product-management/admin/schemas/' . rand(1, 5), $product_schema);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/schemas/' . rand(1, 5), $product_schema);
 
         $response->assertStatus(500);
         $response->assertJson(['message' => 'Không tìm thấy thuộc tính !']);
@@ -299,9 +325,11 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_delete_a_schema_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema = factory(ProductSchema::class)->create()->toArray();
 
-        $response =  $this->call('DELETE', 'api/product-management/admin/schemas/' . $product_schema['id']);
+        $response =  $this->withHeader('Authorization', 'Bearer ' . $token)->json('DELETE', 'api/product-management/admin/schemas/' . $product_schema['id']);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
@@ -312,6 +340,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_rules_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $product_schema_rules = $product_schema_rules->map(function ($product_schema_rule) {
@@ -323,7 +353,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_rules, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules/all');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules/all');
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -332,6 +362,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_rules_with_constraints_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $constraint_name = $product_schema_rules[0]->name;
@@ -347,7 +379,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_rules, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules/all?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules/all?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -356,6 +388,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_rules_order_by_with_search_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $search_name = $product_schema_rules[1]->name;
@@ -371,7 +405,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_rules, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules/all?search=' . $search_name);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules/all?search=' . $search_name);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -380,6 +414,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_rules_order_by_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $product_schema_rules = $product_schema_rules->map(function ($product_schema_rule) {
@@ -396,7 +432,7 @@ class AdminProductSchemaTest extends TestCase
         $listNames = array_column($product_schema_rules, 'name');
         array_multisort($listNames, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules/all?order_by=' . $order_by);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules/all?order_by=' . $order_by);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -405,6 +441,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_rules_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $product_schema_rules = $product_schema_rules->map(function ($product_schema_rule) {
@@ -416,7 +454,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_rules, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules');
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -433,6 +471,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_rules_with_constraints_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $constraint_name = $product_schema_rules[0]->name;
@@ -448,7 +488,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_rules, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -465,6 +505,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_rules_order_by_with_search_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $search_name = $product_schema_rules[1]->name;
@@ -480,7 +522,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_rules, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules?search=' . $search_name);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules?search=' . $search_name);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -497,6 +539,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_rules_order_by_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_rules = factory(ProductSchemaRule::class, 5)->create();
 
         $product_schema_rules = $product_schema_rules->map(function ($product_schema_rule) {
@@ -513,7 +557,7 @@ class AdminProductSchemaTest extends TestCase
         $listNames = array_column($product_schema_rules, 'name');
         array_multisort($listNames, SORT_DESC, $product_schema_rules);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-rules?order_by=' . $order_by);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-rules?order_by=' . $order_by);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_rules]);
@@ -530,6 +574,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_types_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 5)->create();
 
         $product_schema_types = $product_schema_types->map(function ($product_schema_type) {
@@ -541,7 +587,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_types, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types/all');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types/all');
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
@@ -550,6 +596,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_types_with_constraints_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 5)->create();
 
         $constraint_name = $product_schema_types[0]->name;
@@ -565,7 +613,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_types, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types/all?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types/all?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
@@ -574,6 +622,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_types_order_by_with_search_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 5)->create();
 
         $search_name = $product_schema_types[1]->name;
@@ -589,7 +639,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_types, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types/all?search=' . $search_name);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types/all?search=' . $search_name);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
@@ -598,6 +648,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_all_schema_types_order_by_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 2)->create();
 
         $product_schema_types = $product_schema_types->map(function ($product_schema_type) {
@@ -620,7 +672,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_types, 'id');
         array_multisort($listIds, SORT_ASC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types/all?order_by=' . $order_by);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types/all?order_by=' . $order_by);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
@@ -629,6 +681,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_types_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 5)->create();
 
         $product_schema_types = $product_schema_types->map(function ($product_schema_type) {
@@ -640,7 +694,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_types, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types');
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
@@ -657,6 +711,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_types_with_constraints_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 5)->create();
 
         $constraint_name = $product_schema_types[0]->name;
@@ -672,7 +728,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_types, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
@@ -689,6 +745,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_types_order_by_with_search_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 5)->create();
 
         $search_name = $product_schema_types[1]->name;
@@ -705,7 +763,7 @@ class AdminProductSchemaTest extends TestCase
         $listIds = array_column($product_schema_types, 'id');
         array_multisort($listIds, SORT_DESC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types?search=' . $search_name);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types?search=' . $search_name);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
@@ -722,6 +780,8 @@ class AdminProductSchemaTest extends TestCase
     /** @test */
     public function can_get_list_paginate_schema_types_order_by_with_order_by_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_schema_types = factory(ProductSchemaType::class, 5)->create();
 
         $product_schema_types = $product_schema_types->map(function ($product_schema_type) {
@@ -732,7 +792,7 @@ class AdminProductSchemaTest extends TestCase
 
         $order_by = '{"name":"DESC"}';
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types');
         $product_schema_types = $response->json()['data'];
 
         $listIds = array_column($product_schema_types, 'id');
@@ -741,7 +801,7 @@ class AdminProductSchemaTest extends TestCase
         $listNames = array_column($product_schema_types, 'name');
         array_multisort($listNames, SORT_DESC, $product_schema_types);
 
-        $response = $this->call('GET', 'api/product-management/admin/schema-types?order_by=' . $order_by);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/schema-types?order_by=' . $order_by);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product_schema_types]);
