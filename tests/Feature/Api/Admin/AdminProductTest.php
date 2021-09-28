@@ -21,6 +21,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_products_with_paginate_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -30,7 +32,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -53,6 +55,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_products_with_from_request_and_paginate_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -62,7 +66,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?from=2021-12-12&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?from=2021-12-12&field=created');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -77,7 +81,7 @@ class AdminProductTest extends TestCase
             ],
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products?from=2021-12-12&field=updated');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?from=2021-12-12&field=updated');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -92,7 +96,7 @@ class AdminProductTest extends TestCase
             ],
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products?from=2021-12-12&field=published');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?from=2021-12-12&field=published');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -113,6 +117,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_list_products_with_from_request_paginate_by_admin_router_without_field()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -122,7 +128,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?from=2021-7-29');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?from=2021-7-29');
         $response->assertStatus(500);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -136,6 +142,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_paginated_list_products_with_invalid_from_data_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -145,7 +153,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?from=Hanoi, Vietname&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?from=Hanoi, Vietname&field=created');
 
         $response->assertStatus(500);
     }
@@ -156,6 +164,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_products_with_to_request_and_paginate_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -165,7 +175,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?to=2021-12-12&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?to=2021-12-12&field=created');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -180,7 +190,7 @@ class AdminProductTest extends TestCase
             ],
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products?to=2021-12-12&field=updated');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?to=2021-12-12&field=updated');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -195,7 +205,7 @@ class AdminProductTest extends TestCase
             ],
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products?to=2021-12-12&field=published');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?to=2021-12-12&field=published');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -216,6 +226,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_list_products_with_to_request_paginate_by_admin_router_without_field()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -225,7 +237,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?to=2021-7-29');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?to=2021-7-29');
         $response->assertStatus(500);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -239,6 +251,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_paginated_list_products_with_invalid_to_data_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -248,7 +262,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?to=Hanoi, Vietname&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?to=Hanoi, Vietname&field=created');
 
         $response->assertStatus(500);
     }
@@ -258,6 +272,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_in_stock_products_with_paginate_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -269,7 +285,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?in_stock=true');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?in_stock=true');
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
         array_multisort($listIds, SORT_DESC, $listProducts);
@@ -291,6 +307,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_out_stock_products_with_paginate_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -302,7 +320,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?in_stock=false');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?in_stock=false');
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
         array_multisort($listIds, SORT_DESC, $listProducts);
@@ -324,6 +342,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_paginated_products_with_status_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 2; $i < $number + 2; $i++) {
@@ -335,7 +355,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?status=' . $listProducts[0]['status']);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?status=' . $listProducts[0]['status']);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => [$listProducts[0]]]);
@@ -354,6 +374,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_paginated_products_with_category_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create()->each(function ($product) {
             $product->categories()->save(factory(Category::class)->make([
                 'slug' => 'demo_slug'
@@ -366,7 +388,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products?categories=demo_slug');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?categories=demo_slug');
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -390,6 +412,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_paginated_products_with_tags_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create()->each(function ($product) {
             $product->tags()->save(factory(Tag::class)->make([
                 'slug' => 'demo_slug'
@@ -402,7 +426,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products?tags=demo_slug');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?tags=demo_slug');
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -426,6 +450,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_paginated_products_with_author_id_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $author = factory(User::class)->create();
         $products = factory(Product::class, 5)->create([
             'author_id' => $author->id
@@ -437,7 +463,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products?author_id=' . $author->id);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?author_id=' . $author->id);
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -461,6 +487,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_paginated_products_with_constraints_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create();
         $products = $products->map(function ($product) {
             unset($product['created_at']);
@@ -470,7 +498,7 @@ class AdminProductTest extends TestCase
 
         $constraints = '{"name":"' . $products[0]['name'] . '","price":"' . $products[0]['price'] . '"}';
 
-        $response = $this->call('GET', 'api/product-management/admin/products?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -491,6 +519,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_paginated_products_with_search_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create();
 
         $search = $products[0]['name'];
@@ -504,7 +534,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products?search=' . $search);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -525,6 +555,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_paginated_products_with_order_by_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create();
         $products = $products->map(function ($product) {
             unset($product['created_at']);
@@ -532,7 +564,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products?order_by={"name":"DESC"}');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?order_by={"name":"DESC"}');
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -560,6 +592,8 @@ class AdminProductTest extends TestCase
      */
     public function can_show_list_product_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -569,7 +603,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all');
         $response->assertStatus(200);
 
         /* sort by id */
@@ -584,6 +618,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_from_request_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -593,7 +629,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?from=2021-12-12&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?from=2021-12-12&field=created');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -603,7 +639,7 @@ class AdminProductTest extends TestCase
             'data' => []
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?from=2021-12-12&field=updated');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?from=2021-12-12&field=updated');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -613,7 +649,7 @@ class AdminProductTest extends TestCase
             'data' => [],
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?from=2021-12-12&field=published');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?from=2021-12-12&field=published');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -629,6 +665,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_list_all_products_with_from_request_without_field_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -638,7 +676,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?from=2021-7-29');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?from=2021-7-29');
         $response->assertStatus(500);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -652,6 +690,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_list_all_products_with_invalid_from_data_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -661,7 +701,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?from=Hanoi, Vietname&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?from=Hanoi, Vietname&field=created');
 
         $response->assertStatus(500);
     }
@@ -672,6 +712,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_to_request_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -681,7 +723,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?to=2021-12-12&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?to=2021-12-12&field=created');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -691,7 +733,7 @@ class AdminProductTest extends TestCase
             'data' => [],
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?to=2021-12-12&field=updated');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?to=2021-12-12&field=updated');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -701,7 +743,7 @@ class AdminProductTest extends TestCase
             'data' => [],
         ]);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?to=2021-12-12&field=published');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?to=2021-12-12&field=published');
         $response->assertStatus(200);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -717,6 +759,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_list_all_products_with_to_request_by_admin_router_without_field()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -726,7 +770,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?to=2021-7-29');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?to=2021-7-29');
         $response->assertStatus(500);
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
@@ -740,6 +784,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_get_list_all_products_with_invalid_to_data_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -749,7 +795,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products?to=Hanoi, Vietname&field=created');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products?to=Hanoi, Vietname&field=created');
 
         $response->assertStatus(500);
     }
@@ -759,6 +805,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_in_stock_products__by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -770,7 +818,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?in_stock=true');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?in_stock=true');
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
         array_multisort($listIds, SORT_DESC, $listProducts);
@@ -787,6 +835,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_out_stock_products_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -798,7 +848,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?in_stock=false');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?in_stock=false');
         /* sort by id */
         $listIds = array_column($listProducts, 'id');
         array_multisort($listIds, SORT_DESC, $listProducts);
@@ -815,6 +865,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_status_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 2; $i < $number + 2; $i++) {
@@ -826,7 +878,7 @@ class AdminProductTest extends TestCase
             array_push($listProducts, $product);
         }
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?status=' . $listProducts[0]['status']);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?status=' . $listProducts[0]['status']);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => [$listProducts[0]]]);
@@ -840,6 +892,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_category_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create()->each(function ($product) {
             $product->categories()->save(factory(Category::class)->make([
                 'slug' => 'demo_slug'
@@ -852,7 +906,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?categories=demo_slug');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?categories=demo_slug');
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -871,6 +925,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_tags_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create()->each(function ($product) {
             $product->tags()->save(factory(Tag::class)->make([
                 'slug' => 'demo_slug'
@@ -883,7 +939,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?tags=demo_slug');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?tags=demo_slug');
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -902,6 +958,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_author_id_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $author = factory(User::class)->create();
         $products = factory(Product::class, 5)->create([
             'author_id' => $author->id
@@ -913,7 +971,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?author_id=' . $author->id);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?author_id=' . $author->id);
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -932,6 +990,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_constraints_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create();
         $products = $products->map(function ($product) {
             unset($product['created_at']);
@@ -941,7 +1001,7 @@ class AdminProductTest extends TestCase
 
         $constraints = '{"name":"' . $products[0]['name'] . '","price":"' . $products[0]['price'] . '"}';
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?constraints=' . $constraints);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?constraints=' . $constraints);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -957,6 +1017,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_search_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create();
 
         $search = $products[0]['name'];
@@ -970,7 +1032,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?search=' . $search);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?search=' . $search);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -986,6 +1048,8 @@ class AdminProductTest extends TestCase
      */
     public function can_get_list_all_products_with_order_by_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create();
         $products = $products->map(function ($product) {
             unset($product['created_at']);
@@ -993,7 +1057,7 @@ class AdminProductTest extends TestCase
             return $product;
         })->toArray();
 
-        $response = $this->call('GET', 'api/product-management/admin/products/all?order_by={"name":"DESC"}');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all?order_by={"name":"DESC"}');
 
         $listIds = array_column($products, 'id');
         array_multisort($listIds, SORT_DESC, $products);
@@ -1014,9 +1078,11 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_show_product_by_id_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create();
 
-        $response = $this->json('GET', 'api/product-management/admin/products/' . $product->id);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/' . $product->id);
 
         $data = $product->toArray();
         unset($data['updated_at']);
@@ -1030,7 +1096,9 @@ class AdminProductTest extends TestCase
     /** @test */
     public function should_not_show_product_with_indefined_id_admin_router()
     {
-        $response = $this->json('GET', 'api/product-management/admin/products/' . "NOT_A_PRODUCT_ID");
+        $token = $this->loginToken();
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/' . "NOT_A_PRODUCT_ID");
 
         $response->assertStatus(400);
         $response->assertJson(['message' => "products not found"]);
@@ -1039,9 +1107,11 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_create_product_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $data = factory(Product::class)->make()->toArray();
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
@@ -1051,13 +1121,15 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_create_product_with_customize_status_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $customise_status = 1;
 
         $data = factory(Product::class)->make([
             'status' => $customise_status
         ])->toArray();
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
@@ -1067,13 +1139,15 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_create_product_with_customize_original_price_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $customise_original_price = "200000";
 
         $data = factory(Product::class)->make([
             'original_price' => $customise_original_price
         ])->toArray();
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
@@ -1083,13 +1157,15 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_create_product_with_customize_slug_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $customise_slug = "custom-slug";
 
         $data = factory(Product::class)->make([
             'slug' => $customise_slug
         ])->toArray();
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
@@ -1099,6 +1175,8 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_create_product_with_duplicated_slug_by_admin_router()
     {
+        $token = $this->loginToken();
+
         factory(Product::class)->create([
             'slug' => "existed-slug"
         ])->toArray();
@@ -1110,7 +1188,7 @@ class AdminProductTest extends TestCase
         unset($data['created_at']);
         unset($data['updated_at']);
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
@@ -1120,11 +1198,13 @@ class AdminProductTest extends TestCase
     /** @test */
     public function should_not_create_product_without_name_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $data = factory(Product::class)->make([
             'name' => null
         ])->toArray();
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -1138,11 +1218,13 @@ class AdminProductTest extends TestCase
     /** @test */
     public function should_not_create_product_without_price_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $data = factory(Product::class)->make([
             'price' => null
         ])->toArray();
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -1156,6 +1238,8 @@ class AdminProductTest extends TestCase
     /** @test */
     public function should_not_create_product_with_existed_sku_price_by_admin_router()
     {
+        $token = $this->loginToken();
+
         factory(Product::class)->create([
             'sku' => 'EXISTEDSKUCODE'
         ]);
@@ -1163,7 +1247,7 @@ class AdminProductTest extends TestCase
             'sku' => 'EXISTEDSKUCODE'
         ])->toArray();
 
-        $response = $this->json('POST', 'api/product-management/admin/products', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -1179,12 +1263,14 @@ class AdminProductTest extends TestCase
      */
     public function can_update_product_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create();
 
         $id = $product->id;
         $product->name = 'update name';
         $data = $product->toArray();
-        $response = $this->json('PUT', 'api/product-management/admin/products/' . $id, $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/' . $id, $data);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -1204,12 +1290,14 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_product_with_indefined_id_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create();
 
         $id = $product->id;
         $product->name = 'update name';
         $data = $product->toArray();
-        $response = $this->json('PUT', 'api/product-management/admin/products/' . "NOT_A_PRODUCT_ID", $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/' . "NOT_A_PRODUCT_ID", $data);
 
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Product not found']);
@@ -1220,13 +1308,15 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_product_without_name_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create();
 
         unset($product['name']);
 
         $data = $product->toArray();
 
-        $response = $this->json('PUT', 'api/product-management/admin/products/' . $data['id'], $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/' . $data['id'], $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1242,13 +1332,15 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_product_without_price_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create();
 
         $product['price'] = null;
 
         $data = $product->toArray();
 
-        $response = $this->json('PUT', 'api/product-management/admin/products/' . $data['id'], $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/' . $data['id'], $data);
 
         $response->assertStatus(500);
     }
@@ -1258,13 +1350,15 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_product_with_existed_sku_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 2)->create();
 
         $products[0]->sku = $products[1]->sku;
 
         $data = $products[0]->toArray();
 
-        $response = $this->json('PUT', 'api/product-management/admin/products/' . $data['id'], $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/' . $data['id'], $data);
 
         $response->assertStatus(500);
     }
@@ -1275,9 +1369,11 @@ class AdminProductTest extends TestCase
      */
     public function can_get_field_meta_product_by_admin()
     {
+        $token = $this->loginToken();
+
         factory(ProductSchema::class)->create();
 
-        $response = $this->json('GET', 'api/product-management/admin/products/field-meta');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/field-meta');
         $response->assertStatus(200);
 
         $schemas = ProductSchema::get()->map(function ($item) {
@@ -1305,6 +1401,8 @@ class AdminProductTest extends TestCase
      */
     public function can_bulk_update_status_products_by_admin()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -1319,15 +1417,15 @@ class AdminProductTest extends TestCase
         $listIds = array_column($listProducts, 'id');
         $data = ['ids' => $listIds, 'status' => 5];
 
-        $response = $this->json('GET', 'api/product-management/admin/products/all');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all');
         $response->assertJsonFragment(['status' => 1]);
 
-        $response = $this->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
 
-        $response = $this->json('GET', 'api/product-management/admin/products/all');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/all');
         $response->assertJsonFragment(['status' => 5]);
     }
 
@@ -1336,6 +1434,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_bulk_update_status_products_without_status_by_admin()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -1350,7 +1450,7 @@ class AdminProductTest extends TestCase
         $listIds = array_column($listProducts, 'id');
         $data = ['ids' => $listIds];
 
-        $response = $this->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1364,6 +1464,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_bulk_update_status_products_without_ids_by_admin()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -1376,7 +1478,7 @@ class AdminProductTest extends TestCase
 
         $data = ['status' => 5];
 
-        $response = $this->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1392,6 +1494,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_bulk_update_status_products_with_undefined_ids_by_admin()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
@@ -1407,7 +1511,7 @@ class AdminProductTest extends TestCase
         $listIds = array_merge($listIds, [0, 99]);
         $data = ['ids' => $listIds, 'status' => 5];
 
-        $response = $this->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/status/bulk', $data);
 
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Products not found']);
@@ -1418,6 +1522,8 @@ class AdminProductTest extends TestCase
      */
     public function can_update_status_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
         unset($product['updated_at']);
         unset($product['created_at']);
@@ -1425,12 +1531,12 @@ class AdminProductTest extends TestCase
         $this->assertDatabaseHas('products', $product);
 
         $data = ['status' => 2];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/status', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/status', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
 
-        $response = $this->json('GET', 'api/product-management/admin/products/' . $product['id']);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/' . $product['id']);
 
         $response->assertJson(['data' => $data]);
     }
@@ -1440,6 +1546,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_status_a_product_without_status_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
         unset($product['updated_at']);
         unset($product['created_at']);
@@ -1447,7 +1555,7 @@ class AdminProductTest extends TestCase
         $this->assertDatabaseHas('products', $product);
 
         $data = [];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/status', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/status', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => "The given data was invalid."]);
@@ -1463,6 +1571,8 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_status_a_product_with_undefine_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
         unset($product['updated_at']);
         unset($product['created_at']);
@@ -1470,7 +1580,7 @@ class AdminProductTest extends TestCase
         $this->assertDatabaseHas('products', $product);
 
         $data = ['status' => 1];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINE_PRODUCT_ID' . '/status', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINE_PRODUCT_ID' . '/status', $data);
 
         $response->assertStatus(400);
         $response->assertJson(['message' => "Product not found"]);
@@ -1481,10 +1591,12 @@ class AdminProductTest extends TestCase
      */
     public function can_change_published_date_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $data = ['published_date' => date('Y-m-d', strtotime('20-10-2020'))];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
@@ -1495,10 +1607,12 @@ class AdminProductTest extends TestCase
      */
     public function should_not_change_published_date_with_undefine_product_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $data = ['published_date' => date('Y-m-d', strtotime('20-10-2020'))];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINE_PRODUCT_ID' . '/date', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINE_PRODUCT_ID' . '/date', $data);
 
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Product not found']);
@@ -1509,10 +1623,12 @@ class AdminProductTest extends TestCase
      */
     public function should_not_change_published_date_with_invalid_published_data_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $data = ['published_date' => "INVALID_DATE"];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
 
         $response->assertStatus(500);
     }
@@ -1522,10 +1638,12 @@ class AdminProductTest extends TestCase
      */
     public function should_not_change_published_date_without_published_data_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $data = [];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1541,18 +1659,20 @@ class AdminProductTest extends TestCase
      */
     public function can_check_stock_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
-        $response = $this->json('GET', 'api/product-management/admin/product/' . $product['id'] . '/stock');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/product/' . $product['id'] . '/stock');
 
         $response->assertStatus(200);
         $response->assertJson(['in_stock' => true]);
 
         $product = factory(Product::class)->make(['quantity' => 0])->toArray();
-        $response = $this->json('POST', 'api/product-management/admin/products', $product);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $product);
 
         $productId = $response->decodeResponseJson()['data']['id'];
-        $response = $this->json('GET', 'api/product-management/admin/product/' . $productId . '/stock');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/product/' . $productId . '/stock');
         $response->assertJson(['in_stock' => false]);
     }
 
@@ -1563,7 +1683,9 @@ class AdminProductTest extends TestCase
      */
     public function should_not_check_stock_an_undefined_product_by_admin()
     {
-        $response = $this->json('GET', 'api/product-management/admin/product/' . 'UNDEFINED_ID' . '/stock');
+        $token = $this->loginToken();
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/product/' . 'UNDEFINED_ID' . '/stock');
 
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Product not found']);
@@ -1574,11 +1696,13 @@ class AdminProductTest extends TestCase
      */
     public function can_update_quantity_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $number = rand(1, 1000);
         $data = ['quantity' => $number];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/quantity', $data);
 
         $response->assertJson(['quantity' => $data['quantity'] + $product['quantity']]);
     }
@@ -1588,9 +1712,11 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_quantity_a_product_with_undefined_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 1000);
         $data = ['quantity' => $number];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINED_ID' . '/quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINED_ID' . '/quantity', $data);
 
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Product not found']);
@@ -1601,11 +1727,13 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_quantity_a_product_with_nan_quantity_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $number = 'NOT_A_NUMBER_QUANTITY';
         $data = ['quantity' => $number];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/quantity', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1621,9 +1749,11 @@ class AdminProductTest extends TestCase
      */
     public function should_not_update_quantity_a_product_without_quantity_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
         $data = [];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/quantity', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1639,11 +1769,13 @@ class AdminProductTest extends TestCase
      */
     public function can_change_quantity_a_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $number = rand(1, 1000);
         $data = ['quantity' => $number];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/change_quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/change_quantity', $data);
         $response->assertJson(['quantity' => $data['quantity']]);
     }
 
@@ -1652,9 +1784,11 @@ class AdminProductTest extends TestCase
      */
     public function should_not_change_quantity_a_product_with_undefined_id_by_admin()
     {
+        $token = $this->loginToken();
+
         $number = rand(1, 1000);
         $data = ['quantity' => $number];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINE_ID' . '/change_quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . 'UNDEFINE_ID' . '/change_quantity', $data);
 
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Product not found']);
@@ -1665,11 +1799,13 @@ class AdminProductTest extends TestCase
      */
     public function should_not_change_quantity_a_product_with_nan_quantity_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
 
         $number = "NOT_A_NUMBER";
         $data = ['quantity' => $number];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/change_quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/change_quantity', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1685,9 +1821,11 @@ class AdminProductTest extends TestCase
      */
     public function should_not_change_quantity_a_product_without_quantity_by_admin()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create()->toArray();
         $data = [];
-        $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/change_quantity', $data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/change_quantity', $data);
 
         $response->assertStatus(422);
         $response->assertJson(['message' => 'The given data was invalid.']);
@@ -1703,7 +1841,9 @@ class AdminProductTest extends TestCase
      */
     public function can_get_product_type_by_admin()
     {
-        $response = $this->json('GET', 'api/product-management/admin/productTypes');
+        $token = $this->loginToken();
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/productTypes');
 
         $entity = new Product;
         $getProductTypes = $entity->productTypes();
@@ -1717,12 +1857,14 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class)->create();
 
         $data = [$product];
         $param = '?label=product&extension=xlsx';
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJsonCount(1, 'data');
         $response->assertJson(['data' => [[
@@ -1741,6 +1883,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_created_from_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $products = factory(Product::class, 5)->create([
@@ -1751,7 +1895,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -1761,6 +1905,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_updated_from_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $products = factory(Product::class, 5)->create([
@@ -1771,7 +1917,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -1781,6 +1927,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_published_from_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $products = factory(Product::class, 5)->create([
@@ -1791,7 +1939,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -1801,11 +1949,13 @@ class AdminProductTest extends TestCase
      */
     public function should_not_export_product_from_date_without_field_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $param = '?label=product&extension=xlsx&&from=' . $date;
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(500);
     }
@@ -1815,11 +1965,13 @@ class AdminProductTest extends TestCase
      */
     public function should_not_export_product_from_invalid_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = 'INVALID_DATE_FOMART';
 
         $param = '?label=product&extension=xlsx&field=published&from=' . $date;
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(500);
     }
@@ -1829,6 +1981,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_created_to_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $products = factory(Product::class, 5)->create([
@@ -1839,7 +1993,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -1849,6 +2003,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_updated_to_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $products = factory(Product::class, 5)->create([
@@ -1859,7 +2015,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -1869,6 +2025,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_published_to_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $products = factory(Product::class, 5)->create([
@@ -1879,7 +2037,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -1889,11 +2047,13 @@ class AdminProductTest extends TestCase
      */
     public function should_not_export_product_to_date_without_field_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = date('Y-m-d', strtotime('30-7-2021'));
 
         $param = '?label=product&extension=xlsx&&to=' . $date;
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(500);
     }
@@ -1903,11 +2063,13 @@ class AdminProductTest extends TestCase
      */
     public function should_not_export_product_to_invalid_date_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $date = 'INVALID_DATE_FOMART';
 
         $param = '?label=product&extension=xlsx&field=published&to=' . $date;
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(500);
     }
@@ -1917,6 +2079,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_products_with_in_stock_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create([
             'quantity' => rand(0, 1)
         ]);
@@ -1929,7 +2093,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
@@ -1940,6 +2104,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_products_with_out_stock_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create([
             'quantity' => rand(0, 1)
         ]);
@@ -1952,7 +2118,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
@@ -1963,6 +2129,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_products_with_status_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 2)->create([
             'status' => 1
         ]);
@@ -1975,7 +2143,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
@@ -1986,6 +2154,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_products_with_category_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $products = factory(Product::class, 5)->create([
             'status' => rand(0, 1)
         ])->each(function ($product) {
@@ -1998,7 +2168,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
@@ -2009,13 +2179,15 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_with_constraints_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class, 5)->create();
 
         $param = '?label=product&extension=xlsx&constraints={"name":"' . $product[0]->name . '","description":"' . $product[0]->description . '"}';
 
         $export_products = $this->getExportProducts(collect([$product[0]]));
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJsonCount(1, 'data');
         $response->assertJson(['data' => $export_products]);
@@ -2026,6 +2198,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_with_search_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class, 5)->create();
 
         $search = $product[0]->name;
@@ -2039,7 +2213,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -2049,6 +2223,8 @@ class AdminProductTest extends TestCase
      */
     public function can_export_product_with_author_id_by_admin_router()
     {
+        $token = $this->loginToken();
+
         $product = factory(Product::class, 5)->create([
             'author_id' => rand(1, 2)
         ]);
@@ -2061,7 +2237,7 @@ class AdminProductTest extends TestCase
 
         $export_products = $this->getExportProducts($products);
 
-        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/product-management/admin/products/exports' . $param);
         $response->assertStatus(200);
         $response->assertJson(['data' => $export_products]);
     }
@@ -2069,6 +2245,8 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_create_chema_when_create_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $schemas = factory(ProductSchema::class, 2)->create();
 
         $product_meta_datas = [];
@@ -2078,7 +2256,7 @@ class AdminProductTest extends TestCase
 
         $product = factory(Product::class)->make($product_meta_datas)->toArray();
 
-        $response = $this->call('POST', 'api/product-management/admin/products', $product);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $product);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $product]);
@@ -2091,13 +2269,15 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_skip_create_undefinded_chema_when_create_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $product_meta_datas = [
             'an_undefined_schema_key' => 'undefine_schema_value',
         ];
 
         $product = factory(Product::class)->make($product_meta_datas)->toArray();
 
-        $response = $this->call('POST', 'api/product-management/admin/products', $product);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/product-management/admin/products', $product);
 
         unset($product['an_undefined_schema_key']);
 
@@ -2112,6 +2292,8 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_create_new_schema_when_update_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $schemas = factory(ProductSchema::class, 1)->create();
 
         $product_meta_datas = [];
@@ -2123,7 +2305,7 @@ class AdminProductTest extends TestCase
 
         $update_product_data = factory(Product::class)->make($product_meta_datas)->toArray();
 
-        $response = $this->call('PUT', 'api/product-management/admin/products/' . $product['id'], $update_product_data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/' . $product['id'], $update_product_data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $update_product_data]);
@@ -2136,6 +2318,8 @@ class AdminProductTest extends TestCase
     /** @test */
     public function can_update_existed_schema_when_update_product_by_admin()
     {
+        $token = $this->loginToken();
+
         $schemas = factory(ProductSchema::class, 1)->create();
 
         $product_meta_datas = [];
@@ -2153,7 +2337,7 @@ class AdminProductTest extends TestCase
 
         $update_product_data = factory(Product::class)->make($product_meta_datas)->toArray();
 
-        $response = $this->call('PUT', 'api/product-management/admin/products/' . $product[0]['id'], $update_product_data);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/' . $product[0]['id'], $update_product_data);
 
         $response->assertStatus(200);
         $response->assertJson(['data' => $update_product_data]);
@@ -2165,6 +2349,8 @@ class AdminProductTest extends TestCase
 
     /** @test */
     public function can_skip_update_undefined_schema_when_update_product_by_admin() {
+        $token = $this->loginToken();
+
         $product_meta_datas = [
             'an_undefined_schema_key' => 'undefined_schema_value'
         ];
@@ -2173,7 +2359,7 @@ class AdminProductTest extends TestCase
 
         $new_data_with_undefined_schema = factory(Product::class)->make($product_meta_datas)->toArray();
 
-        $response = $this->call('PUT', 'api/product-management/admin/products/'.$product['id'], $new_data_with_undefined_schema);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/product-management/admin/products/'.$product['id'], $new_data_with_undefined_schema);
 
         unset($new_data_with_undefined_schema['an_undefined_schema_key']);
 

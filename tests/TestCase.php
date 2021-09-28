@@ -14,7 +14,10 @@ use VCComponent\Laravel\Product\Providers\ProductServiceProvider;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as TestEntity;
 use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 use VCComponent\Laravel\Tag\Providers\TagServiceProvider;
+use VCComponent\Laravel\User\Entities\User;
+use VCComponent\Laravel\User\Providers\UserComponentEventProvider;
 use VCComponent\Laravel\User\Providers\UserComponentProvider;
+use VCComponent\Laravel\User\Providers\UserComponentRouteProvider;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -35,6 +38,10 @@ abstract class TestCase extends OrchestraTestCase
             ServiceProvider::class,
             CategoryServiceProvider::class,
             TagServiceProvider::class,
+            \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+            \Illuminate\Auth\AuthServiceProvider::class,
+            UserComponentRouteProvider::class,
+            UserComponentEventProvider::class,
         ];
     }
 
@@ -73,7 +80,12 @@ abstract class TestCase extends OrchestraTestCase
         ]);
 
         $app['config']->set('product.auth_middleware', [
-            'admin' => [],
+            'admin' => [
+                [
+                    'middleware' => 'auth',
+                    'except'     => []
+                ]
+            ],
             'frontend' => [],
         ]);
         $app['config']->set('product.test_mode', true);
@@ -113,5 +125,17 @@ abstract class TestCase extends OrchestraTestCase
                 ],
             ],
         ]);
+        $app['config']->set('repository.cache.enabled', false);
+        $app['config']->set('jwt.secret', '5jMwJkcDTUKlzcxEpdBRIbNIeJt1q5kmKWxa0QA2vlUEG6DRlxcgD7uErg51kbBl');
+        $app['config']->set('auth.providers.users.model', User::class);
+    }
+    
+    protected function loginToken()
+    {
+        $dataLogin = ['username' => 'admin', 'password' => 'secret'];
+        factory(User::class)->create($dataLogin);
+        $login = $this->json('POST', 'api/login', $dataLogin);
+        $token = $login->Json()['token'];
+        return $token;
     }
 }
