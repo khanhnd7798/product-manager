@@ -210,7 +210,7 @@ class ProductController extends ApiController
 
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUse($user)->denies('view', $product)) {
+            if (Gate::forUser($user)->denies('view', $product)) {
                 throw new PermissionDeniedException();
             }
         }
