@@ -11,9 +11,14 @@
     - [Model and Transformer](#model-and-transformer)
     - [Auth middleware](#auth-middleware)
   - [Query functions provide](#query-functions-provide)
-    - [List of query functions](#list-of-query-functions)
-    - [Use](#use)
-    - [For example](#for-example)
+    - [Repository](#repository)
+        - [List of query functions](#list-of-query-functions)
+        - [Use](#use)
+        - [For example](#for-example)
+    - [Entity](#entity)
+        - [List of entity query function](#list-of-entity-functions)
+        - [Use entity query function](#use-entity-query-function)
+        - [entity query function example](#entity-query-function-example)
   - [View](#view)
   - [Routes](#routes)
 
@@ -158,7 +163,10 @@ public function schema()
 
 
 ## Query functions provide
-### List of query functions
+
+### Repository
+
+#### List of query functions
 Find  By Field 
 ```php
 public function findProductByField($field, $value)
@@ -203,7 +211,7 @@ public function getSearchResult($key_word,array $list_field  = ['name'], array $
 public function getSearchResultPaginate($key_word, array $list_field  = ['name'], array $where = [], $category_id = 0,$number = 10,$order_by = 'order', $order = 'asc', $columns = ['*']);
 // Search product by keyword with pagination
 ```
-### Use
+#### Use
 At controller use `PostRepository` and add function `__construct`
 ```php
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
@@ -214,7 +222,7 @@ public function __construct(ProductRepository $productRepo)
     $this->productRepo = $productRepo;
 }
 ```
-### For example
+#### For example
 ```php
 $product = $this->productRepo->findProductByField('name','product hot');
 // get a product named hot product
@@ -256,6 +264,108 @@ $productsResult = $this->productRepo->getSearchResultPaginate('hot',['name','des
 // get all product that contain "hot" in name or description field and have status = 1 field and belong to category with id = 3 with paginate
 ```
 
+### Entity
+
+#### List of entity query function
+
+Scope a query to only include products of a given type.
+```php
+public function scopeOfType($query, $type)
+```
+
+Get product collection by type.
+```php
+public static function getByType($type = 'products')
+```
+
+Get product by type with pagination.
+```php
+public static function getByTypeWithPagination($type = 'products', $per_page = 15)
+```
+
+Get product by type and id.
+```php
+public static function findByType($id, $type = 'products')
+```
+
+Get product meta data.
+```php
+public function getMetaField($key)
+```
+
+Scope a query to only include hot products.
+```php
+public function scopeIsHot($query)
+```
+
+Scope a query to only include in stock products.
+```php
+public function scopeInStock($query)
+```
+
+Scope a query to only include publisded products.
+```php
+public function scopeIsPublished($query)
+```
+
+Scope a query to sort products by order column.
+```php
+public function scopeSortByOrder($query, $order = 'desc')
+```
+
+Scope a query to sort products by published_date column.
+```php
+public function scopeSortByPublishedDate($query, $order = 'desc')
+```
+
+Scope a query to sort products by sold quanlity.
+```php
+public function scopeSortBySoldQuanlity($query, $order = 'desc')
+```
+
+Scope a query to search products of given key word. This function is also able to scope with categories, or tags.
+```php
+public function scopeOfSearching($query, $search, $with_category = false, $with_tag = false)
+```
+
+Scope a query to include related products. This function is also able to scope with categories, or tags.
+```php
+public function scopeOfRelatingTo($query, $product, $with_category = false, $with_tag = false)
+```
+
+#### Use entity query function
+
+Use Trait.
+```php
+namespace App\Model;
+
+use VCComponent\Laravel\Product\Traits\ProductQueryTrait;
+
+class Product 
+{
+    use ProductQueryTrait;
+    \\
+}
+```
+
+Extend `VCComponent\Laravel\Product\Entities\Product` Entity.
+```php
+namespace App\Model;
+
+use VCComponent\Laravel\Product\Entities\Product as BaseProduct;
+
+class Product extends BaseProduct
+{
+    \\
+}
+```
+
+#### Entity query function example
+
+```php
+$product = Product::isPublished()->inStock()->with('categories')->sortBySoldQuanlity()->first();
+$products = Product::ofType('product')->isPublished()->inStock()->ofRelatingTo($product, true)->get();
+```
 ## View
 
 Your `ProductListController` controller class must extends `VCComponent\Laravel\Product\Http\Controllers\Web\ProductListController as BaseProductListController` implements `VCComponent\Laravel\Product\Contracts\ViewProductListControllerInterface;`
