@@ -303,7 +303,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                     ->orWhereHas('categories', function ($q) use ($search) {
                         $q->where('name', 'like', $search);
                     })
-                    ->orWhereHas('categories', function ($q) use ($search) {
+                    ->orWhereHas('tags', function ($q) use ($search) {
                         $q->where('name', 'like', $search);
                     });
             })
@@ -358,7 +358,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                 ->orWhereHas('categories', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 })
-                ->orWhereHas('categories', function ($q) use ($search) {
+                ->orWhereHas('tags', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 });
             })
@@ -414,7 +414,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                 ->orWhereHas('categories', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 })
-                ->orWhereHas('categories', function ($q) use ($search) {
+                ->orWhereHas('tags', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 });
             })
@@ -469,7 +469,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                 ->orWhereHas('categories', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 })
-                ->orWhereHas('categories', function ($q) use ($search) {
+                ->orWhereHas('tags', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 });
             })
