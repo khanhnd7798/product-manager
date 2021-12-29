@@ -135,106 +135,117 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         $products = $this->model->whereIn('id', $ids)->forceDelete();
     }
 
-     public function getRelatedProducts($product_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc') {
-         $categories = Categoryable::where('categoryable_id',$product_id)->where('categoryable_type','products')->first();
-         $query = Categoryable::where('category_id',$categories->category_id)
-        ->join('products', 'categoryable_id', '=', 'products.id')->select('products.*')
-            ->where('categoryable_type','products')
-            ->where('products.id','<>',$product_id)
+    public function getRelatedProducts($product_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc')
+    {
+        $categories = Categoryable::where('categoryable_id', $product_id)->where('categoryable_type', 'products')->first();
+        $query = Categoryable::where('category_id', $categories->category_id)
+            ->join('products', 'categoryable_id', '=', 'products.id')->select('products.*')
+            ->where('categoryable_type', 'products')
+            ->where('products.id', '<>', $product_id)
             ->where($where)
-            ->orderBy($order_by,$order);
+            ->orderBy($order_by, $order);
 
-        if($number > 0) {
+        if ($number > 0) {
             return $query->limit($number)->get();
         }
         return $query->get();
-
     }
-    public function getRelatedProductsPaginate($product_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc') {
-         $categories = Categoryable::where('categoryable_id',$product_id)->where('categoryable_type','products')->first();
-         $query = Categoryable::where('category_id',$categories->category_id)
-        ->join('products', 'categoryable_id', '=', 'products.id')->select('products.*')
-            ->where('categoryable_type','products')
-            ->where('products.id','<>',$product_id)
+    public function getRelatedProductsPaginate($product_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc')
+    {
+        $categories = Categoryable::where('categoryable_id', $product_id)->where('categoryable_type', 'products')->first();
+        $query = Categoryable::where('category_id', $categories->category_id)
+            ->join('products', 'categoryable_id', '=', 'products.id')->select('products.*')
+            ->where('categoryable_type', 'products')
+            ->where('products.id', '<>', $product_id)
             ->where($where)
-            ->orderBy($order_by,$order);
-            return $query->paginate($number);
-
+            ->orderBy($order_by, $order);
+        return $query->paginate($number);
     }
 
-    public function getProductsWithCategory($category_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*']) {
+    public function getProductsWithCategory($category_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*'])
+    {
         $query = $this->getEntity()->where($where)
-            ->orderBy($order_by,$order);
-            $query = $query->whereHas('categories', function ($q) use ($category_id) {
-                $q->where('categories.id', $category_id); });
-        if($number > 0) {
+            ->orderBy($order_by, $order);
+        $query = $query->whereHas('categories', function ($q) use ($category_id) {
+            $q->where('categories.id', $category_id);
+        });
+        if ($number > 0) {
             return $query->limit($number)->get($columns);
         }
         return $query->get($columns);
     }
-    public function getProductsWithCategoryPaginate($category_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*']) {
+    public function getProductsWithCategoryPaginate($category_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*'])
+    {
         $query = $this->getEntity()->select($columns)
             ->where($where)
-            ->orderBy($order_by,$order);
-            $query = $query->whereHas('categories', function ($q) use ($category_id) {
-                $q->where('categories.id', $category_id); });
+            ->orderBy($order_by, $order);
+        $query = $query->whereHas('categories', function ($q) use ($category_id) {
+            $q->where('categories.id', $category_id);
+        });
         return $query->paginate($number);
     }
 
-    public function getSearchResult($key_word, array $list_field = ['name'],array $where = [], $category_id = 0,$number = 10,$order_by = 'order', $order = 'asc', $columns = ['*']) {
-        $query = $this->getEntity()->where(function($q) use($list_field , $key_word) {
+    public function getSearchResult($key_word, array $list_field = ['name'], array $where = [], $category_id = 0, $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*'])
+    {
+        $query = $this->getEntity()->where(function ($q) use ($list_field, $key_word) {
             foreach ($list_field  as $field)
                 $q->orWhere($field, 'like', "%{$key_word}%");
         });
         $query->where($where)
-            ->orderBy($order_by,$order);
-            if ($category_id > 0) {
-                $query = $query->whereHas('categories', function ($q) use ($category_id) {
-                    $q->where('categories.id', $category_id); });
-            }
+            ->orderBy($order_by, $order);
+        if ($category_id > 0) {
+            $query = $query->whereHas('categories', function ($q) use ($category_id) {
+                $q->where('categories.id', $category_id);
+            });
+        }
 
-        if($number > 0) {
+        if ($number > 0) {
             return $query->limit($number)->get($columns);
         }
         return $query->get($columns);
     }
-    public function getSearchResultPaginate($key_word, array $list_field  = ['name'], array $where = [], $category_id = 0, $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*']) {
-        $query = $this->getEntity()->where(function($q) use($list_field , $key_word) {
+    public function getSearchResultPaginate($key_word, array $list_field  = ['name'], array $where = [], $category_id = 0, $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*'])
+    {
+        $query = $this->getEntity()->where(function ($q) use ($list_field, $key_word) {
             foreach ($list_field  as $field)
                 $q->orWhere($field, 'like', "%{$key_word}%");
         });
         $query->select($columns)->where($where)
-            ->orderBy($order_by,$order);
-            if ($category_id > 0) {
-                $query = $query->whereHas('categories', function ($q) use ($category_id) {
-                    $q->where('categories.id', $category_id); });
-            }
+            ->orderBy($order_by, $order);
+        if ($category_id > 0) {
+            $query = $query->whereHas('categories', function ($q) use ($category_id) {
+                $q->where('categories.id', $category_id);
+            });
+        }
         return $query->paginate($number);
-
     }
-    public function findProductByField($field, $value) {
+
+    public function findProductByField($field, $value)
+    {
         return $this->getEntity()->where($field, '=', $value)->get();
     }
-    public function findByWhere(array $where, $number = 10, $order_by = 'order', $order = 'asc') {
+    public function findByWhere(array $where, $number = 10, $order_by = 'order', $order = 'asc')
+    {
 
-        $query = $this->getEntity()->where($where)->orderBy($order_by,$order);
-        if($number > 0) {
+        $query = $this->getEntity()->where($where)->orderBy($order_by, $order);
+        if ($number > 0) {
             return $query->limit($number)->get();
         }
         return $query->get();
-
     }
-    public function findByWherePaginate(array $where, $number = 10, $order_by = 'order', $order = 'asc') {
+    public function findByWherePaginate(array $where, $number = 10, $order_by = 'order', $order = 'asc')
+    {
 
-        return $this->getEntity()->where($where)->orderBy($order_by,$order)->paginate($number);
-
+        return $this->getEntity()->where($where)->orderBy($order_by, $order)->paginate($number);
     }
-    public function getProductByID($product_id) {
+    public function getProductByID($product_id)
+    {
         return $this->getEntity()->find($product_id);
     }
-    public function getProductMedias( $product_id, $image_dimension='') {
+    public function getProductMedias($product_id, $image_dimension = '')
+    {
         $product = $this->getEntity()->where('id', $product_id)->first();
-        $images=[];
+        $images = [];
         $count = 0;
         foreach ($product->getMedia() as $item) {
             $images[$count] = $item->getUrl($image_dimension);
@@ -242,9 +253,232 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         }
         return $images;
     }
-    public function getProductUrl($product_id){
+    public function getProductUrl($product_id)
+    {
         $product = $this->getEntity()->find($product_id);
-        return '/products' .'/'.$product->slug;
+        return '/products' . '/' . $product->slug;
     }
 
+    // Add function from here
+    public function getListHotProducts($number_of_products = null, $type = 'products')
+    {
+        $query = $this->getEntity()->ofType($type)
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('is_hot', 1)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        $query = $number_of_products ? $query->limit($number_of_products) : $query;
+        return $query->get();
+    }
+
+    public function getListRelatedProducts($product, $number_of_products = null)
+    {
+        $query = $this->getEntity()->ofType($product->type)
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('id', '<>', $product->id)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        $query = $number_of_products ? $query->limit($number_of_products) : $query;
+        return $query->get();
+    }
+
+    public function getListOfSearchingProducts($search, $number_of_products = null, $type = 'products', $absolute_search = false)
+    {
+        if (!$absolute_search) {
+            $search = '%' . $search . '%';
+        }
+
+        $query = $this->getEntity()->ofType($type)
+            ->where(function ($where_query) use ($search) {
+                $where_query
+                    ->orWhere('title', 'like', $search)
+                    ->orWhere('description', 'like', $search)
+                    ->orWhere('content', 'like', $search)
+                    ->orWhereHas('categories', function ($q) use ($search) {
+                        $q->where('name', 'like', $search);
+                    })
+                    ->orWhereHas('categories', function ($q) use ($search) {
+                        $q->where('name', 'like', $search);
+                    });
+            })
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        $query = $number_of_products ? $query->limit($number_of_products) : $query;
+        return $query->get();
+    }
+
+    public function getListPaginatedHotProducts($per_page = 15, $type = 'products')
+    {
+        $query = $this->getEntity()->ofType($type)
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('is_hot', 1)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        return $query->paginate($per_page);
+    }
+
+    public function getListPaginatedRelatedProducts($product, $per_page = 15, $type = 'products')
+    {
+        $query = $this->getEntity()->ofType($type)
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('id', '<>', $product->id)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        return $query->paginate($per_page);
+    }
+
+    public function getListPaginatedOfSearchingProducts($search, $per_page = 15, $type = 'products', $absolute_search = false)
+    {
+        if (!$absolute_search) {
+            $search = '%' . $search . '%';
+        }
+
+        $query = $this->getEntity()->ofType($type)
+            ->where(function ($where_query) use ($search) {
+                $where_query
+                ->orWhere('title', 'like', $search)
+                ->orWhere('description', 'like', $search)
+                ->orWhere('content', 'like', $search)
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', $search);
+                })
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', $search);
+                });
+            })
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        return $query->paginate($per_page);
+    }
+
+    public function getListHotTranslatableProducts($number_of_products = null, $type = 'products')
+    {
+        $query = $this->getEntity()->ofType($type)->with('languages')
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('is_hot', 1)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        $query = $number_of_products ? $query->limit($number_of_products) : $query;
+        return $query->get();
+    }
+
+    public function getListRelatedTransalatableProducts($product, $number_of_products = null)
+    {
+        $query = $this->getEntity()->ofType($product->type)->with('languages')
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('id', '<>', $product->id)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        $query = $number_of_products ? $query->limit($number_of_products) : $query;
+        return $query->get();
+    }
+
+    public function getListOfSearchingTranslatableProducts($search, $number_of_products = null, $type = 'products', $absolute_search = false)
+    {
+        if (!$absolute_search) {
+            $search = '%' . $search . '%';
+        }
+
+        $query = $this->getEntity()->ofType($type)->with('languages')
+            ->where(function ($where_query) use ($search) {
+                $where_query
+                ->orWhere('title', 'like', $search)
+                ->orWhere('description', 'like', $search)
+                ->orWhere('content', 'like', $search)
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', $search);
+                })
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', $search);
+                });
+            })
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        $query = $number_of_products ? $query->limit($number_of_products) : $query;
+        return $query->get();
+    }
+
+    public function getListPaginatedHotTranslatableProducts($per_page = 15, $type = 'products')
+    {
+        $query = $this->getEntity()->ofType($type)->with('languages')
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('is_hot', 1)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        return $query->paginate($per_page);
+    }
+
+    public function getListPaginatedRelatedTranslatableProducts($product, $per_page = 15)
+    {
+        $query = $this->getEntity()->ofType($product->type)->with('languages')
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('id', '<>', $product->id)
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        return $query->paginate($per_page);
+    }
+
+    public function getListPaginatedOfSearchingTranslatableProducts($search, $per_page = 15, $type = 'products', $absolute_search = false)
+    {
+        if (!$absolute_search) {
+            $search = '%' . $search . '%';
+        }
+
+        $query = $this->getEntity()->ofType($type)->with('languages')
+            ->where(function ($where_query) use ($search) {
+                $where_query
+                ->orWhere('title', 'like', $search)
+                ->orWhere('description', 'like', $search)
+                ->orWhere('content', 'like', $search)
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', $search);
+                })
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', $search);
+                });
+            })
+            ->with('productMetas')
+            ->with('categories')
+            ->with('tags')
+            ->where('status', 1)
+            ->orderBy('order', 'asc')
+            ->latest();
+        return $query->paginate($per_page);
+    }
 }

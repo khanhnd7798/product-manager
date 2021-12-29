@@ -29,4 +29,17 @@ interface ProductRepository extends RepositoryInterface
     public function getProductByID($product_id);
     public function getProductMedias($product_id, $image_dimension= '');
     public function getProductUrl($product_id);
+
+    public function getListHotProducts($number_of_products = null, $type = 'products');
+    public function getListRelatedProducts($product, $number_of_products = null);
+    public function getListOfSearchingProducts($search, $number_of_products = null, $type = 'products', $absolute_search = false);
+    public function getListPaginatedHotProducts($per_page = 15, $type = 'products');
+    public function getListPaginatedRelatedProducts($product, $per_page = 15, $type = 'products');
+    public function getListPaginatedOfSearchingProducts($search, $per_page = 15, $type = 'products', $absolute_search = false);
+    public function getListHotTranslatableProducts($number_of_products = null, $type = 'products');
+    public function getListRelatedTransalatableProducts($product, $number_of_products = null);
+    public function getListOfSearchingTranslatableProducts($search, $number_of_products = null, $type = 'products', $absolute_search = false);
+    public function getListPaginatedHotTranslatableProducts($per_page = 15, $type = 'products');
+    public function getListPaginatedRelatedTranslatableProducts($product, $per_page = 15);
+    public function getListPaginatedOfSearchingTranslatableProducts($search, $per_page = 15, $type = 'products', $absolute_search = false);
 }
