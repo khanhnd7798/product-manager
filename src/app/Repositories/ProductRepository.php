@@ -30,9 +30,9 @@ interface ProductRepository extends RepositoryInterface
     public function getProductMedias($product_id, $image_dimension= '');
     public function getProductUrl($product_id);
 
-    public function getListHotProducts($number_of_products = null, $type = 'products');
+    public function getListHotProducts($number_of_products = null, $category_id = 0);
     public function getListRelatedProducts($product, $number_of_products = null);
-    public function getListOfSearchingProducts($search, $number_of_products = null, $type = 'products', $absolute_search = false);
+    public function getListOfSearchingProducts($search, $number_of_products = null, $absolute_search = false);
     public function getListPaginatedHotProducts($per_page = 15, $type = 'products');
     public function getListPaginatedRelatedProducts($product, $per_page = 15, $type = 'products');
     public function getListPaginatedOfSearchingProducts($search, $per_page = 15, $type = 'products', $absolute_search = false);

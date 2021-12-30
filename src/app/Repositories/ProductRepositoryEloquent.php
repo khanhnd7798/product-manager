@@ -54,10 +54,10 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         $items = App::make(Pipeline::class)
             ->send($query)
             ->through($filters)
-            ->then(function ($content) use ($request, $type) {
-                $content  = $content->where('product_type', $type);
+            ->then(function ($product_type) use ($request, $type) {
+                $product_type  = $product_type->where('product_type', $type);
                 $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
-                $products = $content->paginate($per_page);
+                $products = $product_type->paginate($per_page);
                 return $products;
             });
 
@@ -226,22 +226,23 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
     }
     public function findByWhere(array $where, $number = 10, $order_by = 'order', $order = 'asc')
     {
-
         $query = $this->getEntity()->where($where)->orderBy($order_by, $order);
         if ($number > 0) {
             return $query->limit($number)->get();
         }
         return $query->get();
     }
+    
     public function findByWherePaginate(array $where, $number = 10, $order_by = 'order', $order = 'asc')
     {
-
         return $this->getEntity()->where($where)->orderBy($order_by, $order)->paginate($number);
     }
+
     public function getProductByID($product_id)
     {
         return $this->getEntity()->find($product_id);
     }
+
     public function getProductMedias($product_id, $image_dimension = '')
     {
         $product = $this->getEntity()->where('id', $product_id)->first();
@@ -253,6 +254,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         }
         return $images;
     }
+
     public function getProductUrl($product_id)
     {
         $product = $this->getEntity()->find($product_id);
@@ -260,9 +262,10 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
     }
 
     // Add function from here
-    public function getListHotProducts($number_of_products = null, $type = 'products')
+
+    public function getListHotProducts($number_of_products = null, $category_id = 0)
     {
-        $query = $this->getEntity()->ofType($type)
+        $query = $this->getEntity()
             ->with('productMetas')
             ->with('categories')
             ->with('tags')
@@ -276,7 +279,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function getListRelatedProducts($product, $number_of_products = null)
     {
-        $query = $this->getEntity()->ofType($product->type)
+        $query = $this->getEntity()
             ->with('productMetas')
             ->with('categories')
             ->with('tags')
@@ -288,18 +291,18 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         return $query->get();
     }
 
-    public function getListOfSearchingProducts($search, $number_of_products = null, $type = 'products', $absolute_search = false)
+    public function getListOfSearchingProducts($search, $number_of_products = null, $absolute_search = false)
     {
         if (!$absolute_search) {
             $search = '%' . $search . '%';
         }
 
-        $query = $this->getEntity()->ofType($type)
+        $query = $this->getEntity()
             ->where(function ($where_query) use ($search) {
                 $where_query
-                    ->orWhere('title', 'like', $search)
+                    ->orWhere('name', 'like', $search)
                     ->orWhere('description', 'like', $search)
-                    ->orWhere('content', 'like', $search)
+                    ->orWhere('product_type', 'like', $search)
                     ->orWhereHas('categories', function ($q) use ($search) {
                         $q->where('name', 'like', $search);
                     })
@@ -319,7 +322,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function getListPaginatedHotProducts($per_page = 15, $type = 'products')
     {
-        $query = $this->getEntity()->ofType($type)
+        $query = $this->getEntity()->where('product_type', $type)
             ->with('productMetas')
             ->with('categories')
             ->with('tags')
@@ -332,7 +335,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function getListPaginatedRelatedProducts($product, $per_page = 15, $type = 'products')
     {
-        $query = $this->getEntity()->ofType($type)
+        $query = $this->getEntity()->where('product_type', $type)
             ->with('productMetas')
             ->with('categories')
             ->with('tags')
@@ -349,12 +352,12 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
             $search = '%' . $search . '%';
         }
 
-        $query = $this->getEntity()->ofType($type)
+        $query = $this->getEntity()->where('product_type', $type)
             ->where(function ($where_query) use ($search) {
                 $where_query
-                ->orWhere('title', 'like', $search)
+                ->orWhere('name', 'like', $search)
                 ->orWhere('description', 'like', $search)
-                ->orWhere('content', 'like', $search)
+                ->orWhere('product_type', 'like', $search)
                 ->orWhereHas('categories', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 })
@@ -373,7 +376,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function getListHotTranslatableProducts($number_of_products = null, $type = 'products')
     {
-        $query = $this->getEntity()->ofType($type)->with('languages')
+        $query = $this->getEntity()->where('product_type', $type)->with('languages')
             ->with('productMetas')
             ->with('categories')
             ->with('tags')
@@ -405,12 +408,12 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
             $search = '%' . $search . '%';
         }
 
-        $query = $this->getEntity()->ofType($type)->with('languages')
+        $query = $this->getEntity()->where('product_type', $type)->with('languages')
             ->where(function ($where_query) use ($search) {
                 $where_query
-                ->orWhere('title', 'like', $search)
+                ->orWhere('name', 'like', $search)
                 ->orWhere('description', 'like', $search)
-                ->orWhere('content', 'like', $search)
+                ->orWhere('product_type', 'like', $search)
                 ->orWhereHas('categories', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 })
@@ -430,7 +433,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function getListPaginatedHotTranslatableProducts($per_page = 15, $type = 'products')
     {
-        $query = $this->getEntity()->ofType($type)->with('languages')
+        $query = $this->getEntity()->where('product_type', $type)->with('languages')
             ->with('productMetas')
             ->with('categories')
             ->with('tags')
@@ -460,12 +463,12 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
             $search = '%' . $search . '%';
         }
 
-        $query = $this->getEntity()->ofType($type)->with('languages')
+        $query = $this->getEntity()->where('product_type', $type)->with('languages')
             ->where(function ($where_query) use ($search) {
                 $where_query
-                ->orWhere('title', 'like', $search)
+                ->orWhere('name', 'like', $search)
                 ->orWhere('description', 'like', $search)
-                ->orWhere('content', 'like', $search)
+                ->orWhere('product_type', 'like', $search)
                 ->orWhereHas('categories', function ($q) use ($search) {
                     $q->where('name', 'like', $search);
                 })
