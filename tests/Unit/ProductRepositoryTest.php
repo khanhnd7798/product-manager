@@ -209,9 +209,8 @@ class ProductRepositoryTest extends TestCase
     {
         $product_repository = App::make(ProductRepositoryEloquent::class);
         $data_products = factory(Product::class, 3)->create(['is_hot' => 1, 'product_type' => 'products'])->sortByDesc('created_at')->sortBy('order');
-        $type = 'products';
-        $product = factory(Product::class)->create();
-        $products = $product_repository->getListRelatedHotProducts($product, 6, $type);
+        $product = factory(Product::class)->create(['product_type' => 'products']);
+        $products = $product_repository->getListRelatedHotProducts($product, 6);
         $this->assertProductsEqualDatas($products, $data_products);
     }
 
@@ -236,10 +235,9 @@ class ProductRepositoryTest extends TestCase
     public function can_get_list_paginated_related_products_by_repository_function()
     {
         $product_repository = app(ProductRepositoryEloquent::class);
-        $related_products = factory(Product::class, 3)->create(['product_type' => 'products'])->sortBy('name')->sortByDesc('created_at')->sortBy('order');
-        $product = factory(Product::class)->create();
-        $type = 'products';
-        $products = $product_repository->getListPaginatedRelatedProducts($product , 15, $type);
+        $related_products = factory(Product::class, 3)->create(['product_type' => 'products'])->sortByDesc('created_at')->sortBy('order');
+        $product = factory(Product::class)->create(['product_type' => 'products']);
+        $products = $product_repository->getListPaginatedRelatedProducts($product , 15);
         $this->assertProductsEqualDatas($products, $related_products);
     }
 
