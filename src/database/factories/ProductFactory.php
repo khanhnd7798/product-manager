@@ -19,12 +19,13 @@ $factory->define(Product::class, function (Faker $faker) {
         'author_id'      => 1,
         'thumbnail'      => $faker->imageUrl(),
         'sku'            => Str::random(32),
-        'order'          => 0
+        'order'          => rand(0, 30),
+        'product_type'   => 'products'
     ];
 });
 
-$factory->state(Product::class, 'sim', function () {
+$factory->state(Product::class, 'pages', function () {
     return [
-        'product_type' => 'sim',
+        'product_type' => 'pages',
     ];
 });
