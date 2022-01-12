@@ -275,9 +275,9 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         return $query->get();
     }
 
-    public function getListRelatedHotProducts($product, $number = null, $type = 'products')
+    public function getListRelatedHotProducts($product, $number = null)
     {
-        $query = $this->getEntity()->where('product_type', $type)
+        $query = $this->getEntity()->where('product_type', $product->product_type)
             ->where('id', '<>', $product->id)
             ->where('status', 1)
             ->where('is_hot', 1)
@@ -299,9 +299,9 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
     }
 
     
-    public function getListPaginatedRelatedProducts($product, $per_page = 15, $type = 'products')
+    public function getListPaginatedRelatedProducts($product, $per_page = 15)
     {
-        $query = $this->getEntity()->where('product_type', $type)
+        $query = $this->getEntity()->where('product_type', $product->product_type)
             ->where('id', '<>', $product->id)
             ->where('status', 1)
             ->orderBy('order', 'desc')
@@ -360,7 +360,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         return $query->get();
     }
 
-    public function getListRelatedTransalatableProducts($product, $number = null)
+    public function getListRelatedTranslatableProducts($product, $number = null)
     {
         $query = $this->getEntity()->ofType($product->type)
             ->with('languages')
