@@ -37,7 +37,7 @@ class ProductSchemaController extends ApiController
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['name'], $request);
+        $query = $this->applySearchFromRequest($query, ['name', 'label'], $request);
         $query = $this->applyOrderByFromRequest($query, $request);
 
         $per_page   = $request->has('per_page') ? (int) $request->get('per_page') : 20;
