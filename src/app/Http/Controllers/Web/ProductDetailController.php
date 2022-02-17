@@ -8,6 +8,8 @@ use VCComponent\Laravel\Product\Contracts\ViewProductDetailControllerInterface;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\ViewModels\ProductDetail\ProductDetailViewModel;
+use Illuminate\Support\Str;
+
 
 class ProductDetailController extends Controller implements ViewProductDetailControllerInterface
 {
@@ -47,7 +49,7 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
 
         $view_model = new $this->ViewModel($product);
 
-        $custom_view_func_name = 'viewData' . ucwords($type);
+        $custom_view_func_name = 'viewData' . ucwords(Str::camel($type));
         if (method_exists($this, $custom_view_func_name)) {
             $custom_view_data = $this->$custom_view_func_name($product, $request);
         } else {
@@ -60,7 +62,7 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
             $this->beforeView($data, $request);
         }
 
-        $key = 'view' . ucwords($type);
+        $key = 'view' . ucwords(Str::camel($type));
 
         if (method_exists($this, $key)) {
             return view($this->$key(), $data);
