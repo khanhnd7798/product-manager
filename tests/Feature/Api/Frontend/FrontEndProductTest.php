@@ -20,7 +20,7 @@ class FrontEndProductTest extends TestCase
         $number       = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
-            $product = factory(Product::class)->create()->toArray();
+            $product = factory(Product::class)->create(['product_type' => 'products'])->toArray();
             unset($product['updated_at']);
             unset($product['created_at']);
             array_push($listProducts, $product);
@@ -45,7 +45,7 @@ class FrontEndProductTest extends TestCase
         $number       = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
-            $product = factory(Product::class)->create()->toArray();
+            $product = factory(Product::class)->create(['product_type' => 'products'])->toArray();
             unset($product['updated_at']);
             unset($product['created_at']);
             array_push($listProducts, $product);
@@ -71,9 +71,10 @@ class FrontEndProductTest extends TestCase
     /**
      * @test
      */
+    
     public function can_update_status_a_product_frontend_router()
     {
-        $product = factory(Product::class)->create()->toArray();
+        $product = factory(Product::class)->create(['product_type' => 'products'])->toArray();
         unset($product['updated_at']);
         unset($product['created_at']);
 
@@ -98,7 +99,7 @@ class FrontEndProductTest extends TestCase
         $number       = rand(1, 5);
         $listProducts = [];
         for ($i = 0; $i < $number; $i++) {
-            $product = factory(Product::class)->create()->toArray();
+            $product = factory(Product::class)->create(['product_type' => 'products'])->toArray();
             unset($product['updated_at']);
             unset($product['created_at']);
             array_push($listProducts, $product);
@@ -283,7 +284,7 @@ class FrontEndProductTest extends TestCase
             'an_undefined_schema_key' => 'undefined_schema_value'
         ];
 
-        $product = factory(Product::class)->create()->toArray();
+        $product = factory(Product::class)->create(['product_type' => 'products'])->toArray();
 
         $new_data_with_undefined_schema = factory(Product::class)->make($product_meta_datas)->toArray();
 

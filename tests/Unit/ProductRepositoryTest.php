@@ -236,7 +236,7 @@ class ProductRepositoryTest extends TestCase
     public function can_get_list_paginated_related_products_by_repository_function()
     {
         $product_repository = app(ProductRepositoryEloquent::class);
-        $related_products = factory(Product::class, 3)->create(['product_type' => 'products'])->sortBy('name')->sortByDesc('created_at')->sortBy('order');
+        $related_products = factory(Product::class, 3)->create(['product_type' => 'products'])->sortByDesc('created_at')->sortBy('order');
         $product = factory(Product::class)->create();
         $type = 'products';
         $products = $product_repository->getListPaginatedRelatedProducts($product , 15, $type);

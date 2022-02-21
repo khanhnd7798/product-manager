@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use VCComponent\Laravel\Vicoders\Core\Validators\AbstractValidator;
 use VCComponent\Laravel\Vicoders\Core\Validators\ValidatorInterface;
+use VCComponent\Laravel\Product\Entities\ProductSchema;
 
 class ProductValidator extends AbstractValidator
 {
@@ -48,6 +49,17 @@ class ProductValidator extends AbstractValidator
             'extension' => ['required', 'regex:/(^xlsx$)|(^csv$)/'],
         ],
     ];
+
+    public function getSchemaFunction($entity, $product_type){
+        dd($entity);
+        $schema = ProductSchema::where('product_type', $product_type)->with('schemaType')->with('schemaRule')->get()->mapWithKeys(function ($product) {
+            return [$product->name => [
+                'type' => $product->schemaType->name,
+                'label' => $product->label,
+                'rule' => []
+            ]];
+        });
+    }
 
     public function getSchemaRules($entity)
     {
