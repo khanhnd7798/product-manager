@@ -56,7 +56,7 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
             $custom_view_data = $this->viewData($product, $request);
         }
 
-        $data = array_merge($custom_view_data, $view_model->toArray());
+        $data = array_merge($view_model->toArray(), $custom_view_data);
 
         if (method_exists($this, 'beforeView')) {
             $this->beforeView($data, $request);
