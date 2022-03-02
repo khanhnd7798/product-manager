@@ -55,7 +55,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
             ->send($query)
             ->through($filters)
             ->then(function ($product_type) use ($request, $type) {
-                $product_type  = $product_type->where('product_type', $type);
+                $product_type  = $product_type->where('product_type', $type)->where('status', 1);
                 $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
                 $products = $product_type->paginate($per_page);
                 return $products;

@@ -57,7 +57,7 @@ class ProductListController extends Controller implements ViewProductListControl
         $view_model = new $this->ViewModel($products);
 
         $custom_view_data = $this->viewData($products, $request);
-        $data             = array_merge($custom_view_data, $view_model->toArray());
+        $data             = array_merge($view_model->toArray(), $custom_view_data);
 
         if (method_exists($this, 'beforeView')) {
             $this->beforeView($data, $request);
