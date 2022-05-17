@@ -12,6 +12,7 @@ use VCComponent\Laravel\Product\Contracts\ProductManagement;
 use VCComponent\Laravel\Product\Contracts\ProductSchema;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
 use VCComponent\Laravel\Product\Entities\Variant;
+use VCComponent\Laravel\Product\Traits\ProductHelper;
 use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
 use VCComponent\Laravel\Product\Traits\ProductQueryTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
@@ -20,7 +21,15 @@ use VCComponent\Laravel\Tag\Traits\HasTagsTraits;
 
 class Product extends Model implements Transformable, ProductSchema, ProductManagement
 {
-    use TransformableTrait, ProductSchemaTrait, ProductManagementTrait, Sluggable, SluggableScopeHelpers, HasTagsTraits, SoftDeletes, ProductQueryTrait;
+    use TransformableTrait,
+        ProductSchemaTrait,
+        ProductManagementTrait,
+        Sluggable,
+        SluggableScopeHelpers,
+        HasTagsTraits,
+        SoftDeletes,
+        ProductQueryTrait,
+        ProductHelper;
 
     const STATUS_PENDING   = 0;
     const STATUS_PUBLISHED = 1;
