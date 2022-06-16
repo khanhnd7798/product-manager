@@ -11,6 +11,10 @@ use VCComponent\Laravel\Product\Pipes\ApplySearch;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\ViewModels\ProductList\ProductListViewModel;
+use Illuminate\Support\Str;
+use VCComponent\Laravel\Product\Pipes\ApplyAttribute;
+use VCComponent\Laravel\Product\Pipes\ApplyCategory;
+use VCComponent\Laravel\Product\Pipes\ApplyPrice;
 
 class ProductListController extends Controller implements ViewProductListControllerInterface
 {
@@ -45,7 +49,7 @@ class ProductListController extends Controller implements ViewProductListControl
             $this->afterQuery($products, $request);
         }
 
-        $custom_view_func_name = 'viewData' . ucwords($type);
+        $custom_view_func_name = 'viewData' . ucwords(Str::camel($type));
         if (method_exists($this, $custom_view_func_name)) {
             $custom_view_data = $this->$custom_view_func_name($products, $request);
         } else {
@@ -55,14 +59,14 @@ class ProductListController extends Controller implements ViewProductListControl
         $view_model = new $this->ViewModel($products);
 
         $custom_view_data = $this->viewData($products, $request);
-        $data             = array_merge($custom_view_data, $view_model->toArray());
+        $data             = array_merge($view_model->toArray(), $custom_view_data);
 
         if (method_exists($this, 'beforeView')) {
             $this->beforeView($data, $request);
         }
 
-        $key = 'view' . ucwords($type);
-        
+        $key = 'view' . ucwords(Str::camel($type));
+
         if (method_exists($this, $key)) {
             return view($this->$key(), $data);
         } else {
@@ -76,6 +80,9 @@ class ProductListController extends Controller implements ViewProductListControl
             ApplyConstraints::class,
             ApplySearch::class,
             ApplyOrderBy::class,
+            ApplyAttribute::class,
+            ApplyPrice::class,
+            ApplyCategory::class,
         ];
     }
 

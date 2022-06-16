@@ -8,18 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use VCComponent\Laravel\Category\Traits\HasCategoriesTrait;
 use VCComponent\Laravel\Product\Contracts\ProductManagement;
 use VCComponent\Laravel\Product\Contracts\ProductSchema;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
 use VCComponent\Laravel\Product\Entities\Variant;
+use VCComponent\Laravel\Product\Traits\ProductHelper;
 use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
+use VCComponent\Laravel\Product\Traits\ProductQueryTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
 use VCComponent\Laravel\Tag\Traits\HasTagsTraits;
 
 
 class Product extends Model implements Transformable, ProductSchema, ProductManagement
 {
-    use TransformableTrait, ProductSchemaTrait, ProductManagementTrait, Sluggable, SluggableScopeHelpers, HasTagsTraits, SoftDeletes;
+    use TransformableTrait,
+        ProductSchemaTrait,
+        ProductManagementTrait,
+        Sluggable,
+        SluggableScopeHelpers,
+        HasTagsTraits,
+        SoftDeletes,
+        ProductQueryTrait,
+        HasCategoriesTrait,
+        ProductHelper;
 
     const STATUS_PENDING   = 0;
     const STATUS_PUBLISHED = 1;
