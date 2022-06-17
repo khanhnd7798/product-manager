@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Product\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Routing\Controller;
 use VCComponent\Laravel\Product\Contracts\ViewProductListControllerInterface;
 use VCComponent\Laravel\Product\Pipes\ApplyConstraints;
@@ -11,10 +12,10 @@ use VCComponent\Laravel\Product\Pipes\ApplySearch;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\ViewModels\ProductList\ProductListViewModel;
-use Illuminate\Support\Str;
 use VCComponent\Laravel\Product\Pipes\ApplyAttribute;
 use VCComponent\Laravel\Product\Pipes\ApplyCategory;
 use VCComponent\Laravel\Product\Pipes\ApplyPrice;
+
 
 class ProductListController extends Controller implements ViewProductListControllerInterface
 {

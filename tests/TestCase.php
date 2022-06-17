@@ -6,6 +6,8 @@ use Cviebrock\EloquentSluggable\ServiceProvider;
 use Dingo\Api\Http\Response\Format\Json;
 use Dingo\Api\Provider\LaravelServiceProvider;
 use Dingo\Api\Transformer\Adapter\Fractal;
+use NF\Roles\Models\Role;
+use NF\Roles\RolesServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use VCComponent\Laravel\Category\Providers\CategoryServiceProvider;
 use VCComponent\Laravel\Product\Entities\Product;
@@ -40,6 +42,7 @@ abstract class TestCase extends OrchestraTestCase
             TagServiceProvider::class,
             \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
             \Illuminate\Auth\AuthServiceProvider::class,
+            RolesServiceProvider::class,
             UserComponentRouteProvider::class,
             UserComponentEventProvider::class,
         ];
@@ -128,14 +131,26 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('repository.cache.enabled', false);
         $app['config']->set('jwt.secret', '5jMwJkcDTUKlzcxEpdBRIbNIeJt1q5kmKWxa0QA2vlUEG6DRlxcgD7uErg51kbBl');
         $app['config']->set('auth.providers.users.model', User::class);
+        $app['config']->set('roles.models.role', \NF\Roles\Models\Role::class);
+        $app['config']->set('roles.models.permission', \NF\Roles\Models\Permission::class);
     }
+    
     
     protected function loginToken()
     {
-        $dataLogin = ['username' => 'admin', 'password' => 'secret'];
-        factory(User::class)->create($dataLogin);
+        $dataLogin = ['username' => 'admin', 'password' => '123456789', 'email' => 'admin@test.com'];
+        $user = factory(User::class)->make($dataLogin);
+        $user->save();
+
+        $admin_role = factory(Role::class)->create([
+            'name' => 'admin',
+            'slug' => 'admin'
+        ]); 
+
+        $user->attachRole($admin_role);
         $login = $this->json('POST', 'api/login', $dataLogin);
         $token = $login->Json()['token'];
         return $token;
+
     }
 }

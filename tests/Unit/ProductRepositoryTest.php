@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\App;
 use VCComponent\Laravel\Category\Entities\Category;
 use VCComponent\Laravel\Category\Entities\Categoryable;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
+use VCComponent\Laravel\Product\Repositories\ProductRepositoryEloquent;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class ProductReponsitoryTest extends TestCase
+class ProductRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -165,6 +167,7 @@ class ProductReponsitoryTest extends TestCase
     /**
      * @test
      */
+    
     public function can_get_related_products()
     {
         $repository = App::make(ProductRepository::class);
@@ -183,7 +186,97 @@ class ProductReponsitoryTest extends TestCase
     }
 
 
+    // Add test from here
+
+    /**
+     * @test
+     */
+
+    public function can_get_list_hot_products()
+    {
+        $product_repository = App::make(ProductRepositoryEloquent::class);
+        $data_products = factory(Product::class, 3)->create(['is_hot' => 1, 'product_type' => 'products'])->sortByDesc('created_at')->sortBy('order');
+        $type = 'products';
+        $products = $product_repository->getListHotProducts(3, $type);
+        $this->assertProductsEqualDatas($products, $data_products);
+    }
+
+    /**
+     * @test
+     */
+
+    public function can_get_list_related_hot_products()
+    {
+        $product_repository = App::make(ProductRepositoryEloquent::class);
+        $data_products = factory(Product::class, 3)->create(['is_hot' => 1, 'product_type' => 'products'])->sortByDesc('created_at')->sortBy('order');
+        $product = factory(Product::class)->create(['product_type' => 'products']);
+        $products = $product_repository->getListRelatedHotProducts($product, 6);
+        $this->assertProductsEqualDatas($products, $data_products);
+    }
+
+    /**
+     * @test
+     */
+
+    public function can_get_list_paginated_hot_products()
+    {
+        $product_repository = App::make(ProductRepositoryEloquent::class);
+        $data_products = factory(Product::class, 3)->create(['is_hot' => 1, 'product_type' => 'products'])->sortByDesc('created_at')->sortBy('order');
+        $type = 'products';
+        $products = $product_repository->getListPaginatedHotProducts(3, $type);
+        $this->assertProductsEqualDatas($products, $data_products);
+
+    }
+
+    /**
+     * @test
+     */
+
+    public function can_get_list_paginated_related_products_by_repository_function()
+    {
+        $product_repository = app(ProductRepositoryEloquent::class);
+        $related_products = factory(Product::class, 3)->create(['product_type' => 'products'])->sortByDesc('created_at')->sortBy('order');
+        $product = factory(Product::class)->create(['product_type' => 'products']);
+        $products = $product_repository->getListPaginatedRelatedProducts($product , 15);
+        $this->assertProductsEqualDatas($products, $related_products);
+    }
+
+    
+    /**
+     * @test
+     */
+
+    public function can_get_list_of_searching_products(){
+        $product_repository = App::make(ProductRepositoryEloquent::class);
+        $of_searching_products = factory(Product::class, 3)->create([
+            'name' => 'searching_name',
+            'product_type' => 'products'
+        ])->sortByDesc('created_at')->sortBy('order');
+        $products = $product_repository->getListOfSearchingProducts('searching_name');
+        $this->assertProductsEqualDatas($products, $of_searching_products);
+    }
+
+    /**
+     * @test
+     */
+
+    public function can_get_list_paginated_searching_products(){
+        $product_repository = App::make(ProductRepositoryEloquent::class);
+        $of_searching_products = factory(Product::class, 3)->create([
+            'name' => 'searching_name',
+            'product_type' => 'products'
+        ])->sortByDesc('created_at')->sortBy('order');
+        $products = $product_repository->getListPaginatedOfSearchingProducts('searching_name');
+        $this->assertTrue($products instanceof LengthAwarePaginator);
+        $this->assertProductsEqualDatas($products, $of_searching_products);
+    }
 
 
+    protected function assertProductsEqualDatas($products, $data_products) {
+        $this->assertEquals($products->pluck('name'), $data_products->pluck('name'));
+        $this->assertEquals($products->pluck('description'), $data_products->pluck('description'));
+        $this->assertEquals($products->pluck('order'), $data_products->pluck('order'));
+        $this->assertEquals($products->pluck('product_type'), $data_products->pluck('product_type'));
+    }
 
 }

@@ -30,8 +30,8 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         HasTagsTraits,
         SoftDeletes,
         ProductQueryTrait,
-        HasCategoriesTrait,
-        ProductHelper;
+        ProductHelper,
+        HasCategoriesTrait;
 
     const STATUS_PENDING   = 0;
     const STATUS_PUBLISHED = 1;
